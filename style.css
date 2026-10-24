@@ -177,7 +177,11 @@ p{color:var(--ink-2)}
 .search input:focus{outline:none;border-color:var(--primary-600);background:#fff;box-shadow:0 0 0 3px var(--primary-100)}
 
 /* Bottom nav (mobile) */
-.bottom-nav{display:none}
+@media (min-width: 768px) {
+  .bottom-nav {
+    display: none !important;
+  }
+}
 
 /* ---------- Hero ---------- */
 .hero{
