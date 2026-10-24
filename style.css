@@ -2,7 +2,8 @@
    AnamneSelf — Design System (prototipe frontend)
    ========================================================= */
 :root{
-  --primary:#0f766e; --primary-600:#0d9488; --primary-700:#115e59;
+  /* --primary:#0f766e; --primary-600:#0d9488; --primary-700:#115e59; */
+  --primary:#19578C; --primary-600:#3D999C; --primary-700:#2C74A2;
   --primary-50:#f0fdfa; --primary-100:#ccfbf1; --primary-200:#99f6e4;
   --accent:#2563eb; --accent-50:#eff6ff;
   --ink:#0f172a; --ink-2:#334155; --muted:#64748b; --line:#e2e8f0; --line-2:#f1f5f9;
