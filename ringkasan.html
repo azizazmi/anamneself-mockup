@@ -68,8 +68,9 @@
         <!-- KOLOM KIRI: JAWABAN PASIEN -->
         <div class="grid" style="align-content:start">
 
+          <!-- 1. KELUHAN UTAMA & KELUHAN LAIN -->
           <section class="card">
-            <!-- Keluhan Utama -->
+            <!-- Apa yang paling mengganggu Anda saat ini? -->
             <div style="margin-bottom: 1.25rem;">
               <div class="sec-title" style="margin-bottom: 0.5rem;">
                 <svg class="ic ic-sm"><use href="#i-stetho"/></svg>
@@ -80,7 +81,7 @@
               </div>
             </div>
 
-            <!-- Keluhan Lain -->
+            <!-- Gejala lain yang mungkin Anda rasakan -->
             <div>
               <div class="sec-title" style="margin-bottom: 0.5rem;">
                 <svg class="ic ic-sm"><use href="#i-stetho"/></svg>
@@ -88,55 +89,162 @@
               </div>
               <div class="row" style="gap: 0.5rem; flex-wrap: wrap;">
                 <span class="badge badge-neutral">Demam</span>
+                <span class="badge badge-neutral">Berdahak</span>
                 <span class="badge badge-neutral">Sesak napas</span>
                 <span class="badge badge-neutral">Nyeri tenggorokan</span>
               </div>
             </div>
           </section>
 
+          <!-- 2. RIWAYAT PENYAKIT SEKARANG -->
           <section class="card">
-            <div class="sec-title"><svg class="ic ic-sm"><use href="#i-activity"/></svg>Riwayat penyakit sekarang</div>
+            <div class="sec-title"><svg class="ic ic-sm"><use href="#i-activity"/></svg>Riwayat Penyakit Sekarang</div>
             <dl class="kv">
-              <dt>Kualitas</dt><dd>Batuk berdahak</dd>
-              <dt>VAS</dt><dd>6/10 (sedang)</dd>
-              <dt>Onset</dt><dd>Batuk mulai 5 hari lalu · demam mulai hari ke-3</dd>
-              <dt>Durasi</dt><dd>Batuk 5 hari · demam hari ke-3</dd>
-              <dt>Frekuensi</dt><dd>Batuk 3 kali sehari</dd>
-              <dt>Situasi dan Kondisi Terjadi</dt><dd>Berkontak dengan orang bergejala serupa</dd>
-              <dt>Demam</dt><dd><span class="badge badge-warn">Ya</span></dd>
-              <dt>Sesak napas</dt><dd><span class="badge badge-warn">Ya, ringan saat aktivitas</span></dd>
-              <dt>Memperberat</dt><dd>Malam hari dan udara dingin</dd>
-              <dt>Meringankan</dt><dd>Minum air hangat, istirahat</dd>
+              <!-- Di mana keluhan dirasakan? -->
+              <dt>Lokasi keluhan</dt>
+              <dd>Dada tengah dan tenggorokan</dd>
+
+              <!-- Apa yang Anda rasakan dari keluhan utama Anda? -->
+              <dt>Kualitas</dt>
+              <dd>Batuk berdahak kental, dada terasa berat saat menarik napas</dd>
+
+              <!-- Seberapa berat keluhan yang Anda rasakan? -->
+              <dt>VAS</dt>
+              <dd>4/10 (sedang)</dd>
+
+              <!-- Sudah berapa lama keluhan ini berlangsung? -->
+              <dt>Durasi</dt>
+              <dd>5 hari</dd>
+
+              <!-- Berapa kali keluhan tersebut muncul dalam sehari? -->
+              <dt>Frekuensi per hari</dt>
+              <dd>5 kali</dd>
+
+              <!-- Setiap kali keluhan muncul, berapa lama durasinya? -->
+              <dt>Durasi tiap kali muncul</dt>
+              <dd>10 menit</dd>
+
+              <!-- Apakah ada faktor yang menyebabkan keluhan muncul? + Jika iya, tuliskan -->
+              <dt>Situasi dan kondisi</dt>
+              <dd>Ya · Terpapar udara dingin malam hari dan asap rokok</dd>
             </dl>
           </section>
 
+          <!-- 3. RIWAYAT PENYAKIT DAHULU -->
           <section class="card">
-            <div class="sec-title"><svg class="ic ic-sm"><use href="#i-file"/></svg>Riwayat kesehatan</div>
+            <div class="sec-title"><svg class="ic ic-sm"><use href="#i-file"/></svg>Riwayat Penyakit Dahulu</div>
             <dl class="kv">
-              <dt>Asma</dt><dd>Ya (sejak masa kanak-kanak)</dd>
-              <dt>Hipertensi</dt><dd>Tidak</dd>
-              <dt>Diabetes</dt><dd>Tidak</dd>
-              <dt>Kontak pasien TBC</dt><dd><span class="unknown"><svg class="ic ic-sm"><use href="#i-help"/></svg>Belum diketahui</span></dd>
-              <dt>Riwayat keluarga</dt><dd>Hipertensi</dd>
-              <dt>Kebiasaan</dt><dd>Merokok ± 10 batang/hari</dd>
+              <!-- Apakah Anda pernah mengalami keluhan serupa di masa lalu? -->
+              <dt>Keluhan serupa</dt>
+              <dd>Ya (sekitar 6 bulan yang lalu)</dd>
+
+              <!-- Apakah Anda pernah kontak erat dengan penderita TBC? -->
+              <dt>Kontak erat TBC</dt>
+              <dd><span class="unknown"><svg class="ic ic-sm"><use href="#i-help"/></svg>Belum diketahui</span></dd>
+
+              <!-- Riwayat penyakit pada keluarga/penyakit keturunan -->
+              <dt>Penyakit keturunan</dt>
+              <dd>Asma</dd>
+
+              <!-- Apakah Anda pernah dioperasi/dibedah? -->
+              <dt>Riwayat operasi</dt>
+              <dd>Tidak</dd>
+
+              <!-- Apakah Anda pernah mengalami kecelakaan atau cedera serius? -->
+              <dt>Cedera serius</dt>
+              <dd>Tidak</dd>
             </dl>
           </section>
 
+          <!-- 4. RIWAYAT PENYAKIT KELUARGA -->
           <section class="card">
-            <div class="sec-title"><svg class="ic ic-sm"><use href="#i-flask"/></svg>Alergi &amp; obat</div>
+            <div class="sec-title"><svg class="ic ic-sm"><use href="#i-users"/></svg>Riwayat Penyakit Keluarga</div>
             <dl class="kv">
-              <dt>Alergi obat</dt><dd><span class="unknown"><svg class="ic ic-sm"><use href="#i-help"/></svg>Belum diketahui</span></dd>
-              <dt>Obat dikonsumsi</dt><dd>Parasetamol 500 mg bila demam</dd>
-              <dt>Kondisi khusus</dt><dd>Tidak ada</dd>
+              <!-- Apakah ada anggota keluarga yang mengalami keluhan serupa dengan yang Anda alami saat ini? -->
+              <dt>Keluhan serupa</dt>
+              <dd>Ya (anak batuk dan pilek 3 hari lalu)</dd>
+
+              <!-- Apakah ada anggota keluarga yang memiliki riwayat penyakit keturunan? -->
+              <dt>Penyakit keturunan</dt>
+              <dd>Ya (ibu riwayat asma)</dd>
+
+              <!-- Apakah ada anggota keluarga yang mengalami penyakit menular saat ini? -->
+              <dt>Penyakit menular</dt>
+              <dd>Tidak</dd>
             </dl>
           </section>
 
+          <!-- 5. RIWAYAT SOSIAL DAN KEBIASAAN -->
+          <section class="card">
+            <div class="sec-title"><svg class="ic ic-sm"><use href="#i-user"/></svg>Riwayat Sosial dan Kebiasaan</div>
+            <dl class="kv">
+              <!-- Apakah Anda memiliki masalah dengan anggota keluarga saat ini? -->
+              <dt>Masalah keluarga</dt>
+              <dd>Tidak</dd>
+
+              <!-- Apakah Anda memiliki masalah dengan kolega kerja atau teman sekolah? -->
+              <dt>Masalah kolega/sekolah</dt>
+              <dd>Tidak</dd>
+
+              <!-- Apa makanan terakhir yang anda konsumsi? -->
+              <dt>Makanan terakhir</dt>
+              <dd>Nasi goreng</dd>
+
+              <!-- Apakah Anda makan teratur? -->
+              <dt>Keteraturan makan</dt>
+              <dd>Ya</dd>
+
+              <!-- Bagaimana konsumsi air Anda? -->
+              <dt>Konsumsi air</dt>
+              <dd>Cukup</dd>
+
+              <!-- Seberapa sering Anda beraktivitas fisik setiap minggu? -->
+              <dt>Aktivitas fisik</dt>
+              <dd>2 kali per minggu</dd>
+
+              <!-- Apakah Anda merokok? + Seberapa banyak batang rokok -->
+              <dt>Kebiasaan merokok</dt>
+              <dd>Ya · ± 10 batang per hari</dd>
+
+              <!-- Apakah Anda meminum alkohol? + Seberapa banyak -->
+              <dt>Konsumsi alkohol</dt>
+              <dd>Tidak</dd>
+
+              <!-- Apakah Anda mengonsumsi obat-obatan terlarang? -->
+              <dt>Obat terlarang</dt>
+              <dd>Tidak</dd>
+
+              <!-- Bagaimana kondisi kebersihan lingkungan tempat tinggal Anda? -->
+              <dt>Kebersihan lingkungan</dt>
+              <dd>Bersih</dd>
+            </dl>
+          </section>
+
+          <!-- 6. ALERGI & OBAT -->
+          <section class="card">
+            <div class="sec-title"><svg class="ic ic-sm"><use href="#i-flask"/></svg>Alergi &amp; Obat</div>
+            <dl class="kv">
+              <!-- Apakah Anda memiliki alergi obat? -->
+              <dt>Alergi obat</dt>
+              <dd><span class="unknown"><svg class="ic ic-sm"><use href="#i-help"/></svg>Belum diketahui</span></dd>
+
+              <!-- Apakah saat ini anda sedang mengonsumsi obat? -->
+              <dt>Obat dikonsumsi</dt>
+              <dd>Ya (Parasetamol 500 mg bila demam)</dd>
+
+              <!-- Kondisi khusus -->
+              <dt>Kondisi khusus</dt>
+              <dd>Tidak ada</dd>
+            </dl>
+          </section>
+
+          <!-- CATATAN INFORMASI BELUM DIKETAHUI -->
           <div class="alert alert-warn">
             <svg class="ic"><use href="#i-help"/></svg>
-            <p class="small"><b>2 informasi belum diketahui</b> (alergi obat, kontak pasien TBC). Konfirmasi saat konsultasi; informasi ini <b>tidak dianggap negatif</b>.</p>
+            <p class="small"><b>2 informasi belum diketahui</b> (alergi obat, kontak erat TBC). Konfirmasi saat konsultasi; informasi ini <b>tidak dianggap negatif</b>.</p>
           </div>
-        </div>
 
+        </div>
         <!-- KOLOM KANAN: CDSS -->
         <aside class="grid sticky-side" style="align-content:start">
 
