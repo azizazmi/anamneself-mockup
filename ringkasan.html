@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ringkasan Anamnesis — AnamneSelf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"><svg class="ic ic-lg"><use href="#i-clipboard"/></svg></div>
+      <div>AnamneSelf<small>Dokter &amp; Faskes</small></div>
+    </div>
+    <nav class="nav">
+      <span class="nav-label">Menu</span>
+      <a href="dokter-dashboard.html"><svg class="ic"><use href="#i-home"/></svg>Dashboard</a>
+      <a href="dokter-dashboard.html#antrean"><svg class="ic"><use href="#i-users"/></svg>Antrean Pasien<span class="badge badge-info count">18</span></a>
+      <a href="ringkasan.html" class="active"><svg class="ic"><use href="#i-file"/></svg>Ringkasan Anamnesis</a>
+      <a href="#"><svg class="ic"><use href="#i-database"/></svg>Rekam Medis Klinik</a>
+    </nav>
+    <div class="side-foot">
+      <div class="user-chip">
+        <div class="avatar blue">AW</div>
+        <div style="min-width:0"><b class="small">dr. Andi Wijaya</b><div class="xs muted">Dokter Umum</div></div>
+      </div>
+      <a href="login.html" class="btn btn-outline btn-sm"><svg class="ic ic-sm"><use href="#i-logout"/></svg>Keluar</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark"><svg class="ic"><use href="#i-clipboard"/></svg></div>AnamneSelf</div>
+      <a href="dokter-dashboard.html" class="btn btn-ghost btn-sm page-back"><svg class="ic ic-sm"><use href="#i-back"/></svg>Antrean</a>
+      <div class="row">
+        <button class="icon-btn" aria-label="Notifikasi"><svg class="ic"><use href="#i-bell"/></svg></button>
+        <div class="avatar blue">AW</div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <div class="page-head">
+        <div class="row" style="gap:1rem">
+          <div class="avatar avatar-lg">SA</div>
+          <div>
+            <div class="row" style="gap:.5rem"><h1>Pasien Sintetis A</h1><span class="badge badge-danger"><svg class="ic ic-sm"><use href="#i-alert"/></svg>Red flag</span></div>
+            <p class="small">34 th · Laki-laki · No. RM: DEMO-0001 · Kunjungan 20 Okt 2026, 09.30</p>
+          </div>
+        </div>
+        <div class="row no-print">
+          <button class="btn btn-outline" onclick="window.print()"><svg class="ic ic-sm"><use href="#i-printer"/></svg>Cetak</button>
+          <button class="btn btn-primary"><svg class="ic ic-sm"><use href="#i-check"/></svg>Verifikasi &amp; simpan</button>
+        </div>
+      </div>
+
+      <div class="alert alert-info">
+        <svg class="ic"><use href="#i-shield"/></svg>
+        <p class="small"><b>Sistem pendukung keputusan.</b> Ringkasan, kemungkinan diagnosis, dan rekomendasi pemeriksaan di bawah ini disusun berdasarkan aturan klinis terstruktur. Seluruh hasil <b>wajib diverifikasi dokter</b> sebelum digunakan. Data pada prototipe ini adalah data sintetis.</p>
+      </div>
+
+      <div class="grid grid-main">
+
+        <!-- KOLOM KIRI: JAWABAN PASIEN -->
+        <div class="grid" style="align-content:start">
+
+          <section class="card">
+            <!-- Keluhan Utama -->
+            <div style="margin-bottom: 1.25rem;">
+              <div class="sec-title" style="margin-bottom: 0.5rem;">
+                <svg class="ic ic-sm"><use href="#i-stetho"/></svg>
+                Keluhan Utama
+              </div>
+              <div class="row" style="gap: 0.5rem; flex-wrap: wrap;">
+                <span class="badge badge-danger">Batuk</span>
+              </div>
+            </div>
+
+            <!-- Keluhan Lain -->
+            <div>
+              <div class="sec-title" style="margin-bottom: 0.5rem;">
+                <svg class="ic ic-sm"><use href="#i-stetho"/></svg>
+                Keluhan Lain
+              </div>
+              <div class="row" style="gap: 0.5rem; flex-wrap: wrap;">
+                <span class="badge badge-neutral">Demam</span>
+                <span class="badge badge-neutral">Sesak napas</span>
+                <span class="badge badge-neutral">Nyeri tenggorokan</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="sec-title"><svg class="ic ic-sm"><use href="#i-activity"/></svg>Riwayat penyakit sekarang</div>
+            <dl class="kv">
+              <dt>Kualitas</dt><dd>Batuk berdahak</dd>
+              <dt>VAS</dt><dd>6/10 (sedang)</dd>
+              <dt>Onset</dt><dd>Batuk mulai 5 hari lalu · demam mulai hari ke-3</dd>
+              <dt>Durasi</dt><dd>Batuk 5 hari · demam hari ke-3</dd>
+              <dt>Frekuensi</dt><dd>Batuk 3 kali sehari</dd>
+              <dt>Situasi dan Kondisi Terjadi</dt><dd>Berkontak dengan orang bergejala serupa</dd>
+              <dt>Demam</dt><dd><span class="badge badge-warn">Ya</span></dd>
+              <dt>Sesak napas</dt><dd><span class="badge badge-warn">Ya, ringan saat aktivitas</span></dd>
+              <dt>Memperberat</dt><dd>Malam hari dan udara dingin</dd>
+              <dt>Meringankan</dt><dd>Minum air hangat, istirahat</dd>
+            </dl>
+          </section>
+
+          <section class="card">
+            <div class="sec-title"><svg class="ic ic-sm"><use href="#i-file"/></svg>Riwayat kesehatan</div>
+            <dl class="kv">
+              <dt>Asma</dt><dd>Ya (sejak masa kanak-kanak)</dd>
+              <dt>Hipertensi</dt><dd>Tidak</dd>
+              <dt>Diabetes</dt><dd>Tidak</dd>
+              <dt>Kontak pasien TBC</dt><dd><span class="unknown"><svg class="ic ic-sm"><use href="#i-help"/></svg>Belum diketahui</span></dd>
+              <dt>Riwayat keluarga</dt><dd>Hipertensi</dd>
+              <dt>Kebiasaan</dt><dd>Merokok ± 10 batang/hari</dd>
+            </dl>
+          </section>
+
+          <section class="card">
+            <div class="sec-title"><svg class="ic ic-sm"><use href="#i-flask"/></svg>Alergi &amp; obat</div>
+            <dl class="kv">
+              <dt>Alergi obat</dt><dd><span class="unknown"><svg class="ic ic-sm"><use href="#i-help"/></svg>Belum diketahui</span></dd>
+              <dt>Obat dikonsumsi</dt><dd>Parasetamol 500 mg bila demam</dd>
+              <dt>Kondisi khusus</dt><dd>Tidak ada</dd>
+            </dl>
+          </section>
+
+          <div class="alert alert-warn">
+            <svg class="ic"><use href="#i-help"/></svg>
+            <p class="small"><b>2 informasi belum diketahui</b> (alergi obat, kontak pasien TBC). Konfirmasi saat konsultasi; informasi ini <b>tidak dianggap negatif</b>.</p>
+          </div>
+        </div>
+
+        <!-- KOLOM KANAN: CDSS -->
+        <aside class="grid sticky-side" style="align-content:start">
+
+          <section class="card" style="border-color:var(--danger-line)">
+            <div class="sec-title" style="color:var(--danger)"><svg class="ic ic-sm"><use href="#i-alert"/></svg>Tanda bahaya terdeteksi</div>
+            <p class="small">Kombinasi <b>demam &gt; 3 hari</b> dan <b>sesak napas</b> memenuhi aturan penanda untuk evaluasi lebih lanjut. Disarankan pengukuran SpO₂ dan frekuensi napas lebih dulu.</p>
+          </section>
+
+          <section class="card">
+            <div class="sec-title"><svg class="ic ic-sm"><use href="#i-activity"/></svg>Kemungkinan diagnosis</div>
+            <div class="organ-title" style="margin-top:0">Sistem respirasi</div>
+
+            <div class="dx sel">
+              <div class="dx-top">
+                <div><div class="dx-name">Bronkitis akut</div><div class="dx-code">ICD-10 · J20.9</div></div>
+                <span class="badge badge-info">5 / 7 kriteria</span>
+              </div>
+              <div class="bar"><i style="width:71%"></i></div>
+              <label class="pick"><input type="checkbox" checked>Pilih sebagai diagnosis kerja</label>
+            </div>
+
+            <div class="dx">
+              <div class="dx-top">
+                <div><div class="dx-name">Pneumonia komunitas</div><div class="dx-code">ICD-10 · J18.9</div></div>
+                <span class="badge badge-warn">4 / 8 kriteria</span>
+              </div>
+              <div class="bar warn"><i style="width:50%"></i></div>
+              <label class="pick"><input type="checkbox">Pilih sebagai diagnosis kerja</label>
+            </div>
+
+            <div class="dx">
+              <div class="dx-top">
+                <div><div class="dx-name">Infeksi saluran napas atas akut</div><div class="dx-code">ICD-10 · J06.9</div></div>
+                <span class="badge badge-neutral">3 / 6 kriteria</span>
+              </div>
+              <div class="bar warn"><i style="width:50%"></i></div>
+              <label class="pick"><input type="checkbox">Pilih sebagai diagnosis kerja</label>
+            </div>
+
+            <p class="rule-note"><svg class="ic ic-sm"><use href="#i-info"/></svg><span>Angka menunjukkan jumlah kriteria klinis yang terpenuhi, bukan probabilitas. Sistem organ lain: tidak ada aturan yang terpenuhi.</span></p>
+          </section>
+
+          <section class="card">
+            <div class="sec-title"><svg class="ic ic-sm"><use href="#i-stetho"/></svg>Rekomendasi pemeriksaan</div>
+            <b class="small">Pemeriksaan fisik</b>
+            <ul class="checklist mt-1 mb-2">
+              <li><svg class="ic ic-sm"><use href="#i-check"/></svg>Tanda vital: suhu, frekuensi napas, SpO₂</li>
+              <li><svg class="ic ic-sm"><use href="#i-check"/></svg>Auskultasi paru (ronki, mengi)</li>
+              <li><svg class="ic ic-sm"><use href="#i-check"/></svg>Inspeksi tenggorokan</li>
+            </ul>
+            <b class="small">Pemeriksaan penunjang</b>
+            <ul class="checklist mt-1">
+              <li><svg class="ic ic-sm"><use href="#i-check"/></svg>Foto toraks (bila ada tanda pneumonia)</li>
+              <li><svg class="ic ic-sm"><use href="#i-check"/></svg>Darah lengkap</li>
+              <li><svg class="ic ic-sm"><use href="#i-check"/></svg>Skrining TBC bila kontak positif</li>
+            </ul>
+          </section>
+
+          <section class="card">
+            <div class="sec-title"><svg class="ic ic-sm"><use href="#i-database"/></svg>Dokumentasi klinis</div>
+            <p class="small mb-2">Setelah diagnosis dikonfirmasi, kode ICD-10 dan informasi terverifikasi dapat dipindahkan ke rekam medis klinik.</p>
+            <div class="grid" style="gap:.6rem">
+              <button class="btn btn-primary btn-block"><svg class="ic ic-sm"><use href="#i-check"/></svg>Konfirmasi &amp; simpan ke rekam medis</button>
+              <button class="btn btn-outline btn-block">Salin ringkasan</button>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+
+<nav class="bottom-nav" aria-label="Navigasi utama">
+  <a href="dokter-dashboard.html"><svg class="ic"><use href="#i-home"/></svg>Dashboard</a>
+  <a href="dokter-dashboard.html#antrean"><svg class="ic"><use href="#i-users"/></svg>Antrean</a>
+  <a href="ringkasan.html" class="active"><svg class="ic"><use href="#i-file"/></svg>Ringkasan</a>
+  <a href="login.html"><svg class="ic"><use href="#i-logout"/></svg>Keluar</a>
+</nav>
+<script src="app.js"></script>
+</body>
+</html>

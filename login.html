@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Masuk — AnamneSelf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="auth">
+
+  <aside class="auth-aside">
+    <div class="brand">
+      <div class="brand-mark"><svg class="ic ic-lg"><use href="#i-clipboard"/></svg></div>
+      <div>AnamneSelf<small>Anamnesis digital pra-konsultasi</small></div>
+    </div>
+
+    <div>
+      <h1>Isi anamnesis sebelum tiba di klinik.</h1>
+      <p>Pasien menjawab pertanyaan terstruktur lewat ponsel. Dokter menerima ringkasan, dukungan keputusan klinis, dan dokumentasi dalam satu alur.</p>
+      <div class="feat">
+        <div><svg class="ic"><use href="#i-phone"/></svg><span><b>Mudah dari ponsel.</b> Pertanyaan terstruktur, bisa dibantu petugas klinik.</span></div>
+        <div><svg class="ic"><use href="#i-activity"/></svg><span><b>Dukungan keputusan klinis.</b> Kemungkinan diagnosis per sistem organ dan rekomendasi pemeriksaan.</span></div>
+        <div><svg class="ic"><use href="#i-shield"/></svg><span><b>Dokter tetap memutuskan.</b> Semua hasil wajib diverifikasi dokter.</span></div>
+      </div>
+    </div>
+
+    <div class="auth-foot">Prototipe antarmuka · Hackathon Deeptech 2026 · Universitas Muhammadiyah Yogyakarta</div>
+  </aside>
+
+  <main class="auth-main">
+    <div class="auth-box">
+      <h2>Selamat datang</h2>
+      <p class="muted small mt-1">Masuk untuk melanjutkan ke AnamneSelf.</p>
+
+      <form data-login>
+        <div class="role-switch" role="radiogroup" aria-label="Masuk sebagai">
+          <label><input type="radio" name="role" value="pasien" checked><span><svg class="ic ic-sm"><use href="#i-user"/></svg>Pasien</span></label>
+          <label><input type="radio" name="role" value="dokter"><span><svg class="ic ic-sm"><use href="#i-stetho"/></svg>Dokter / Faskes</span></label>
+        </div>
+        <p class="hint" id="role-hint" style="margin:-.5rem 0 1rem">Akses untuk pasien yang akan berkunjung ke klinik.</p>
+
+        <div class="field">
+          <label for="id" id="id-label">Email / NIK</label>
+          <div class="input-icon">
+            <svg class="ic"><use href="#i-mail"/></svg>
+            <input class="input" id="id" type="text" placeholder="nama@email.com" autocomplete="username" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="row between"><label for="pw">Kata sandi</label><a href="#" class="small strong" style="color:var(--primary)">Lupa sandi?</a></div>
+          <div class="input-icon">
+            <svg class="ic"><use href="#i-lock"/></svg>
+            <input class="input" id="pw" type="password" placeholder="••••••••" autocomplete="current-password" required>
+          </div>
+        </div>
+
+        <label class="check mb-2"><input type="checkbox"> Ingat saya di perangkat ini</label>
+
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Masuk <svg class="ic"><use href="#i-arrow"/></svg></button>
+      </form>
+
+      <div class="divider">atau</div>
+      <a href="#" class="btn btn-outline btn-block">Daftar sebagai pasien baru</a>
+
+      <div class="alert alert-info mt-3">
+        <svg class="ic"><use href="#i-info"/></svg>
+        <p class="small"><b>Mode demo.</b> Tanpa backend: isi kolom apa saja, lalu tekan Masuk. Semua data pada prototipe ini adalah data sintetis.</p>
+      </div>
+    </div>
+  </main>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard Dokter — AnamneSelf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"><svg class="ic ic-lg"><use href="#i-clipboard"/></svg></div>
+      <div>AnamneSelf<small>Dokter &amp; Faskes</small></div>
+    </div>
+    <nav class="nav">
+      <span class="nav-label">Menu</span>
+      <a href="dokter-dashboard.html" class="active"><svg class="ic"><use href="#i-home"/></svg>Dashboard</a>
+      <a href="#antrean"><svg class="ic"><use href="#i-users"/></svg>Antrean Pasien<span class="badge badge-info count">18</span></a>
+      <a href="ringkasan.html"><svg class="ic"><use href="#i-file"/></svg>Ringkasan Anamnesis</a>
+      <a href="#"><svg class="ic"><use href="#i-database"/></svg>Rekam Medis Klinik</a>
+    </nav>
+    <div class="side-foot">
+      <div class="user-chip">
+        <div class="avatar blue">AW</div>
+        <div style="min-width:0"><b class="small">dr. Andi Wijaya</b><div class="xs muted">Dokter Umum</div></div>
+      </div>
+      <a href="login.html" class="btn btn-outline btn-sm"><svg class="ic ic-sm"><use href="#i-logout"/></svg>Keluar</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark"><svg class="ic"><use href="#i-clipboard"/></svg></div>AnamneSelf</div>
+      <div class="search page-hello"><svg class="ic"><use href="#i-search"/></svg><input type="search" placeholder="Cari nama atau no. rekam medis…" aria-label="Cari pasien"></div>
+      <div class="row">
+        <button class="icon-btn" aria-label="Notifikasi"><svg class="ic"><use href="#i-bell"/></svg><span class="pip"></span></button>
+        <div class="avatar blue">AW</div>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-head">
+        <div>
+          <h1>Dashboard Dokter</h1>
+          <p>Sabtu, 24 Oktober 2026 · Klinik Pratama Rawat Inap Firdaus Unit II</p>
+        </div>
+        <a href="ringkasan.html" class="btn btn-primary">Tinjau pasien berikutnya <svg class="ic"><use href="#i-arrow"/></svg></a>
+      </div>
+
+      <section class="grid grid-4">
+        <div class="card stat"><div class="stat-ic blue"><svg class="ic ic-lg"><use href="#i-users"/></svg></div><div><b>18</b><span>Pasien hari ini</span></div></div>
+        <div class="card stat"><div class="stat-ic"><svg class="ic ic-lg"><use href="#i-check"/></svg></div><div><b>12</b><span>Anamnesis selesai</span></div></div>
+        <div class="card stat"><div class="stat-ic warn"><svg class="ic ic-lg"><use href="#i-clock"/></svg></div><div><b>4</b><span>Menunggu diisi</span></div></div>
+        <div class="card stat"><div class="stat-ic danger"><svg class="ic ic-lg"><use href="#i-alert"/></svg></div><div><b>2</b><span>Perlu perhatian segera</span></div></div>
+      </section>
+
+      <div class="alert alert-danger">
+        <svg class="ic"><use href="#i-alert"/></svg>
+        <p class="small"><b>2 pasien memiliki tanda bahaya (red flag)</b> pada jawaban anamnesis. Tanda ini hanya penanda untuk ditinjau dokter, bukan diagnosis.</p>
+      </div>
+
+      <div class="grid grid-main">
+        <section class="card" id="antrean">
+          <div class="card-head">
+            <h2><svg class="ic"><use href="#i-users"/></svg>Antrean &amp; status anamnesis</h2>
+            <div class="tabs">
+              <button class="tab active" data-filter="semua">Semua</button>
+              <button class="tab" data-filter="selesai">Selesai</button>
+              <button class="tab" data-filter="menunggu">Belum diisi</button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="stack">
+              <thead>
+                <tr><th>Pasien</th><th>Keluhan utama</th><th>Sistem organ</th><th>Anamnesis</th><th>Prioritas</th><th></th></tr>
+              </thead>
+              <tbody>
+                <tr data-status="selesai">
+                  <td><div class="pt"><div class="avatar">SA</div><div><b>Pasien Sintetis A</b><span>34 th · L · 09.30</span></div></div></td>
+                  <td data-label="Keluhan">Batuk berdahak, demam, sesak ringan</td>
+                  <td data-label="Sistem organ">Respirasi</td>
+                  <td data-label="Anamnesis"><span class="badge badge-success"><span class="dot"></span>Selesai</span></td>
+                  <td data-label="Prioritas"><span class="badge badge-danger">Red flag</span></td>
+                  <td><a href="ringkasan.html" class="btn btn-primary btn-sm">Tinjau</a></td>
+                </tr>
+                <tr data-status="selesai">
+                  <td><div class="pt"><div class="avatar">SB</div><div><b>Pasien Sintetis B</b><span>52 th · P · 09.45</span></div></div></td>
+                  <td data-label="Keluhan">Nyeri dada saat aktivitas</td>
+                  <td data-label="Sistem organ">Kardiovaskular</td>
+                  <td data-label="Anamnesis"><span class="badge badge-success"><span class="dot"></span>Selesai</span></td>
+                  <td data-label="Prioritas"><span class="badge badge-danger">Red flag</span></td>
+                  <td><a href="ringkasan.html" class="btn btn-outline btn-sm">Tinjau</a></td>
+                </tr>
+                <tr data-status="selesai">
+                  <td><div class="pt"><div class="avatar">SC</div><div><b>Pasien Sintetis C</b><span>27 th · P · 10.00</span></div></div></td>
+                  <td data-label="Keluhan">Nyeri ulu hati, mual</td>
+                  <td data-label="Sistem organ">Pencernaan</td>
+                  <td data-label="Anamnesis"><span class="badge badge-success"><span class="dot"></span>Selesai</span></td>
+                  <td data-label="Prioritas"><span class="badge badge-neutral">Rutin</span></td>
+                  <td><a href="ringkasan.html" class="btn btn-outline btn-sm">Tinjau</a></td>
+                </tr>
+                <tr data-status="selesai">
+                  <td><div class="pt"><div class="avatar">SD</div><div><b>Pasien Sintetis D</b><span>41 th · L · 10.15</span></div></div></td>
+                  <td data-label="Keluhan">Pusing, tekanan darah tinggi</td>
+                  <td data-label="Sistem organ">Kardiovaskular</td>
+                  <td data-label="Anamnesis"><span class="badge badge-success"><span class="dot"></span>Selesai</span></td>
+                  <td data-label="Prioritas"><span class="badge badge-warn">Perlu cek</span></td>
+                  <td><a href="ringkasan.html" class="btn btn-outline btn-sm">Tinjau</a></td>
+                </tr>
+                <tr data-status="menunggu">
+                  <td><div class="pt"><div class="avatar">SE</div><div><b>Pasien Sintetis E</b><span>19 th · P · 10.30</span></div></div></td>
+                  <td data-label="Keluhan"><span class="muted">—</span></td>
+                  <td data-label="Sistem organ"><span class="muted">—</span></td>
+                  <td data-label="Anamnesis"><span class="badge badge-warn"><span class="dot"></span>Belum diisi</span></td>
+                  <td data-label="Prioritas"><span class="badge badge-neutral">—</span></td>
+                  <td><button class="btn btn-outline btn-sm">Kirim pengingat</button></td>
+                </tr>
+                <tr data-status="menunggu">
+                  <td><div class="pt"><div class="avatar">SF</div><div><b>Pasien Sintetis F</b><span>63 th · L · 10.45</span></div></div></td>
+                  <td data-label="Keluhan"><span class="muted">—</span></td>
+                  <td data-label="Sistem organ"><span class="muted">—</span></td>
+                  <td data-label="Anamnesis"><span class="badge badge-warn"><span class="dot"></span>Belum diisi</span></td>
+                  <td data-label="Prioritas"><span class="badge badge-neutral">—</span></td>
+                  <td><button class="btn btn-outline btn-sm">Bantu isi di klinik</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <aside class="grid" style="align-content:start">
+          <section class="card">
+            <div class="card-head"><h2><svg class="ic"><use href="#i-activity"/></svg>Sebaran sistem organ</h2></div>
+            <div class="bar-row"><div class="bar-top"><span>Respirasi</span><span>5</span></div><div class="bar"><i style="width:80%"></i></div></div>
+            <div class="bar-row"><div class="bar-top"><span>Kardiovaskular</span><span>3</span></div><div class="bar"><i style="width:55%"></i></div></div>
+            <div class="bar-row"><div class="bar-top"><span>Pencernaan</span><span>2</span></div><div class="bar"><i style="width:35%"></i></div></div>
+            <div class="bar-row"><div class="bar-top"><span>Lainnya</span><span>2</span></div><div class="bar warn"><i style="width:35%"></i></div></div>
+          </section>
+
+          <section class="card">
+            <div class="card-head"><h2><svg class="ic"><use href="#i-shield"/></svg>Catatan penggunaan</h2></div>
+            <ul class="checklist">
+              <li><svg class="ic ic-sm"><use href="#i-check"/></svg><span>Kemungkinan diagnosis adalah <b>pendukung keputusan</b>, bukan diagnosis final.</span></li>
+              <li><svg class="ic ic-sm"><use href="#i-check"/></svg><span>Jawaban “tidak tahu” ditandai <b>belum diketahui</b>, bukan negatif.</span></li>
+              <li><svg class="ic ic-sm"><use href="#i-check"/></svg><span>Kode ICD-10 disarankan setelah dokter menetapkan diagnosis.</span></li>
+            </ul>
+          </section>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>
+
+<nav class="bottom-nav" aria-label="Navigasi utama">
+  <a href="dokter-dashboard.html" class="active"><svg class="ic"><use href="#i-home"/></svg>Dashboard</a>
+  <a href="#antrean"><svg class="ic"><use href="#i-users"/></svg>Antrean</a>
+  <a href="ringkasan.html"><svg class="ic"><use href="#i-file"/></svg>Ringkasan</a>
+  <a href="login.html"><svg class="ic"><use href="#i-logout"/></svg>Keluar</a>
+</nav>
+<script src="app.js"></script>
+</body>
+</html>

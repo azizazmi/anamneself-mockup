@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Beranda Pasien — AnamneSelf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"><svg class="ic ic-lg"><use href="#i-clipboard"/></svg></div>
+      <div>AnamneSelf<small>Portal Pasien</small></div>
+    </div>
+    <nav class="nav">
+      <span class="nav-label">Menu</span>
+      <a href="pasien-dashboard.html" class="active"><svg class="ic"><use href="#i-home"/></svg>Beranda</a>
+      <a href="anamnesis.html"><svg class="ic"><use href="#i-clipboard"/></svg>Self-Anamnesis<span class="badge badge-warn count">Baru</span></a>
+      <a href="#riwayat"><svg class="ic"><use href="#i-clock"/></svg>Riwayat Kunjungan</a>
+      <a href="#"><svg class="ic"><use href="#i-user"/></svg>Profil Saya</a>
+    </nav>
+    <div class="side-foot">
+      <div class="user-chip">
+        <div class="avatar">SA</div>
+        <div style="min-width:0"><b class="small">Pasien Sintetis A</b><div class="xs muted">No. RM: DEMO-0001</div></div>
+      </div>
+      <a href="login.html" class="btn btn-outline btn-sm"><svg class="ic ic-sm"><use href="#i-logout"/></svg>Keluar</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark"><svg class="ic"><use href="#i-clipboard"/></svg></div>AnamneSelf</div>
+      <div class="page-hello"><span class="muted small">Sabtu, 24 Oktober 2026</span></div>
+      <div class="row">
+        <button class="icon-btn" aria-label="Notifikasi"><svg class="ic"><use href="#i-bell"/></svg><span class="pip"></span></button>
+        <div class="avatar">SA</div>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-head">
+        <div>
+          <h1>Halo, Pasien Sintetis A 👋</h1>
+          <p>Siapkan kunjungan Anda dengan mengisi anamnesis lebih awal.</p>
+        </div>
+      </div>
+
+      <section class="hero">
+        <div>
+          <span class="badge" style="background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.3)"><svg class="ic ic-sm"><use href="#i-calendar"/></svg>Kunjungan mendatang</span>
+          <h2 class="mt-1">Isi self-anamnesis sebelum konsultasi</h2>
+          <p>Hanya sekitar 5 menit. Jawaban Anda membantu dokter memahami keluhan sebelum Anda masuk ruang periksa.</p>
+          <div class="hero-meta">
+            <span><svg class="ic ic-sm"><use href="#i-calendar"/></svg>Senin, 26 Okt 2026 · 09.30</span>
+            <span><svg class="ic ic-sm"><use href="#i-stetho"/></svg>dr. Andi Wijaya (Dokter Umum)</span>
+            <span><svg class="ic ic-sm"><use href="#i-home"/></svg>Klinik Pratama Rawat Inap Firdaus Unit II</span>
+          </div>
+        </div>
+        <a href="anamnesis.html" class="btn btn-white btn-lg">Mulai Anamnesis <svg class="ic"><use href="#i-arrow"/></svg></a>
+      </section>
+
+      <section class="grid grid-3">
+        <div class="card stat"><div class="stat-ic warn"><svg class="ic ic-lg"><use href="#i-clipboard"/></svg></div><div><b>Belum diisi</b><span>Status anamnesis</span></div></div>
+        <div class="card stat"><div class="stat-ic blue"><svg class="ic ic-lg"><use href="#i-clock"/></svg></div><div><b>± 5 menit</b><span>Estimasi pengisian</span></div></div>
+        <div class="card stat"><div class="stat-ic"><svg class="ic ic-lg"><use href="#i-file"/></svg></div><div><b>2</b><span>Kunjungan sebelumnya</span></div></div>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>Bagaimana alurnya?</h2></div>
+        <div class="how">
+          <div><p><b>Isi anamnesis</b><span>Jawab pertanyaan terstruktur dari ponsel Anda, kapan saja sebelum kunjungan.</span></p></div>
+          <div><p><b>Dokter meninjau</b><span>Dokter menerima ringkasan jawaban dan memverifikasinya saat konsultasi.</span></p></div>
+          <div><p><b>Konsultasi lebih fokus</b><span>Waktu konsultasi digunakan untuk pemeriksaan, bukan mencatat dari nol.</span></p></div>
+        </div>
+      </section>
+
+      <div class="grid grid-main">
+        <section class="card" id="riwayat">
+          <div class="card-head"><h2><svg class="ic"><use href="#i-clock"/></svg>Riwayat kunjungan</h2><a href="#" class="small strong" style="color:var(--primary)">Lihat semua</a></div>
+          <ul class="list">
+            <li>
+              <div class="stat-ic"><svg class="ic"><use href="#i-file"/></svg></div>
+              <div class="grow"><b class="small">Kontrol hipertensi</b><div class="xs muted">12 Agu 2026 · dr. Andi Wijaya</div></div>
+              <span class="badge badge-success">Selesai</span>
+            </li>
+            <li>
+              <div class="stat-ic"><svg class="ic"><use href="#i-file"/></svg></div>
+              <div class="grow"><b class="small">Batuk pilek</b><div class="xs muted">03 Mei 2026 · dr. Rina Pratiwi</div></div>
+              <span class="badge badge-success">Selesai</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="card">
+          <div class="card-head"><h2><svg class="ic"><use href="#i-shield"/></svg>Privasi & keamanan</h2></div>
+          <p class="small">Jawaban Anda hanya dapat dilihat oleh tenaga medis yang menangani Anda dan digunakan untuk keperluan pelayanan.</p>
+          <div class="alert alert-info mt-2">
+            <svg class="ic"><use href="#i-info"/></svg>
+            <p class="small">Tidak tahu jawabannya? Pilih <b>“Tidak tahu”</b>. Itu tidak dianggap sebagai “Tidak”.</p>
+          </div>
+          <a href="#" class="btn btn-outline btn-sm btn-block mt-2"><svg class="ic ic-sm"><use href="#i-help"/></svg>Butuh bantuan petugas klinik?</a>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+
+<nav class="bottom-nav" aria-label="Navigasi utama">
+  <a href="pasien-dashboard.html" class="active"><svg class="ic"><use href="#i-home"/></svg>Beranda</a>
+  <a href="anamnesis.html"><svg class="ic"><use href="#i-clipboard"/></svg>Anamnesis</a>
+  <a href="#riwayat"><svg class="ic"><use href="#i-clock"/></svg>Riwayat</a>
+  <a href="login.html"><svg class="ic"><use href="#i-logout"/></svg>Keluar</a>
+</nav>
+<script src="app.js"></script>
+</body>
+</html>
