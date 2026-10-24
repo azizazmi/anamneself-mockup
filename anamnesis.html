@@ -306,6 +306,119 @@
 
         <!-- LANGKAH 5 -->
         <section class="step card" data-step="5">
+          <div class="card-head"><h2><svg class="ic"><use href="#i-file"/></svg>Riwayat Sosial dan Kebiasaan</h2></div>
+          <div class="alert alert-info mb-1">
+            <svg class="ic"><use href="#i-info"/></svg>
+            <p class="small">Jawaban <b>“Tidak tahu”</b> akan ditandai sebagai <i>belum diketahui</i> untuk ditanyakan ulang oleh dokter.</p>
+          </div>
+
+          <div class="q">
+            <span class="label">Apakah Anda memiliki masalah dengan anggota keluarga saat ini?</span>
+            <div class="seg">
+              <label><input type="radio" name="keluarga" value="ya"><span>Ya</span></label>
+              <label><input type="radio" name="keluarga" value="tidak"><span>Tidak</span></label>
+            </div>
+          </div>
+
+          <div class="q">
+            <span class="label">Apakah Anda memiliki masalah dengan kolega kerja atau teman sekolah?</span>
+            <div class="seg">
+              <label><input type="radio" name="kolega" value="ya"><span>Ya</span></label>
+              <label><input type="radio" name="kolega" value="tidak"><span>Tidak</span></label>
+            </div>
+          </div>
+
+          <div class="q">
+            <span class="label">Apa makanan terakhir yang anda konsumsi?</span>
+            <textarea class="textarea" placeholder="Contoh: Nasi goreng" style="min-height:90px"></textarea>
+          </div>
+
+          <div class="q">
+            <span class="label">Apakah Anda makan teratur?</span>
+            <div class="seg">
+              <label><input type="radio" name="makan" value="ya"><span>Ya</span></label>
+              <label><input type="radio" name="makan" value="tidak"><span>Tidak</span></label>
+            </div>
+          </div>
+
+          <div class="q">
+            <span class="label">Bagaimana konsumsi air Anda?</span>
+            <div class="seg">
+              <label><input type="radio" name="air" value="ya"><span>Cukup</span></label>
+              <label><input type="radio" name="air" value="tidak"><span>Kurang</span></label>
+            </div>
+          </div>
+
+          <div class="q">
+            <span class="label">Seberapa sering Anda beraktivitas fisik setiap minggu?</span>
+            <div class="form-row">
+              <input class="input" id="durasi" type="number" min="1" placeholder="Contoh: 5">
+              <select class="select" id="satuan">
+                <option>kali</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="q">
+            <span class="label">Apakah Anda merokok?</span>
+            <div class="seg">
+              <label><input type="radio" name="rokok" value="ya"><span>Ya</span></label>
+              <label><input type="radio" name="rokok" value="tidak"><span>Tidak</span></label>
+            </div>
+          </div>
+
+          <div class="q">
+            <span class="label">Seberapa banyak batang rokok yang Anda konsumsi setiap hari?</span>
+            <div class="form-row">
+              <input class="input" id="durasi" type="number" min="1" placeholder="Contoh: 5">
+              <select class="select" id="satuan">
+                <option>batang</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="q">
+            <span class="label">Apakah Anda meminum alkohol?</span>
+            <div class="seg">
+              <label><input type="radio" name="alkohol" value="ya"><span>Ya</span></label>
+              <label><input type="radio" name="alkohol" value="tidak"><span>Tidak</span></label>
+            </div>
+          </div>
+
+          <div class="q">
+            <span class="label">Seberapa banyak Anda meminum alkohol setiap minggu?</span>
+            <div class="form-row">
+              <input class="input" id="durasi" type="number" min="1" placeholder="Contoh: 5">
+              <select class="select" id="satuan">
+                <option>gelas</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="q">
+            <span class="label">Apakah Anda mengonsumsi obat-obatan terlarang?</span>
+            <div class="seg">
+              <label><input type="radio" name="obat-terlarang" value="ya"><span>Ya</span></label>
+              <label><input type="radio" name="obat-terlarang" value="tidak"><span>Tidak</span></label>
+            </div>
+          </div>
+
+          <div class="q">
+            <span class="label">Bagaimana kondisi kebersihan lingkungan tempat tinggal Anda?</span>
+            <div class="seg">
+              <label><input type="radio" name="kebersihan" value="ya"><span>Bersih</span></label>
+              <label><input type="radio" name="kebersihan" value="tidak"><span>Tidak bersih</span></label>
+            </div>
+          </div>
+
+          <div class="wizard-actions">
+            <button type="button" class="btn btn-outline" data-prev><svg class="ic"><use href="#i-back"/></svg>Kembali</button>
+            <button type="button" class="btn btn-primary" data-next>Lanjut <svg class="ic"><use href="#i-arrow"/></svg></button>
+          </div>
+        </section>
+
+        <!-- LANGKAH 6 -->
+        <section class="step card" data-step="6">
           <div class="card-head"><h2><svg class="ic"><use href="#i-flask"/></svg>Alergi & obat</h2></div>
 
           <div class="q">
