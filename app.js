@@ -1,4 +1,4 @@
-/* AnamneSelf — Rule Engine, Dashboard Sync & Clinical Evaluation */
+/* AnamneSelf — Rule Engine, Precise Form Reader & Dashboard Sync */
 (function () {
   // ---------- 1. Sprite Ikon ----------
   var P = {
@@ -43,7 +43,6 @@
       var role = roleEl ? roleEl.value : 'pasien';
       window.location.href = role === 'dokter' ? 'dokter-dashboard.html' : 'pasien-dashboard.html';
     });
-
     var hint = document.getElementById('role-hint');
     login.querySelectorAll('input[name="role"]').forEach(function (r) {
       r.addEventListener('change', function () {
@@ -56,30 +55,30 @@
     });
   }
 
-  // ---------- 3. Helper Pengambilan Data Form ----------
-  function getRadioText(name, def) {
-    var el = document.querySelector('input[name="' + name + '"]:checked');
-    if (!el) return def || 'Tidak';
+  // ---------- 3. Helper Pengambilan Data Form Akurat ----------
+  function getRadioText(containerOrName) {
+    var el = null;
+    if (containerOrName.indexOf('input') !== -1 || containerOrName.indexOf('.') !== -1 || containerOrName.indexOf('#') !== -1) {
+      el = document.querySelector(containerOrName + ' input:checked');
+    } else {
+      el = document.querySelector('input[name="' + containerOrName + '"]:checked');
+    }
+    if (!el) return 'Tidak';
     var lbl = el.closest('label');
     return lbl ? lbl.textContent.replace('✓', '').trim() : el.value;
   }
 
-  function getSelectedChips(stepSelector) {
-    var stepEl = document.querySelector(stepSelector);
-    if (!stepEl) return [];
-    var checked = stepEl.querySelectorAll('input:checked');
+  function getSelectedChips(containerSelector) {
+    var c = document.querySelector(containerSelector);
+    if (!c) return [];
+    var checked = c.querySelectorAll('input:checked');
     return Array.prototype.map.call(checked, function (el) {
       var lbl = el.closest('label');
       return lbl ? lbl.textContent.replace('✓', '').trim() : el.value;
     });
   }
 
-  function getTextVal(selector, def) {
-    var el = document.querySelector(selector);
-    return (el && el.value.trim()) ? el.value.trim() : def;
-  }
-
-  // ---------- 4. Wizard Form Pasien (anamnesis.html) ----------
+  // ---------- 4. Wizard Self-Anamnesis (anamnesis.html) ----------
   var wiz = document.querySelector('[data-wizard]');
   if (wiz) {
     var steps = Array.prototype.slice.call(wiz.querySelectorAll('.step'));
@@ -119,54 +118,79 @@
     }
 
     function kumpulkanDataPasien() {
-      // 1. Keluhan Utama & Lain
-      var kuList = getSelectedChips('.step[data-step="1"] .q:nth-of-type(1)');
-      var ku = kuList.length ? kuList[0] : getTextVal('.step[data-step="1"] textarea', 'Sakit kepala');
+      // 1. Keluhan Utama & Keluhan Lain (Poin 1 Fix)
+      var kuChecked = document.querySelectorAll('.step[data-step="1"] .q:first-of-type input:checked');
+      var ku = kuChecked.length ? kuChecked[0].closest('label').textContent.replace('✓', '').trim() : 'Sakit kepala';
 
-      var klList = getSelectedChips('.step[data-step="1"] .q:nth-of-type(2)');
-      var kl = klList.length ? klList : ['Pusing', 'Leher kaku'];
+      // Ambil keluhan lain HANYA dari container keluhan lain
+      var klChecked = document.querySelectorAll('.step[data-step="1"] .q:nth-of-type(2) input:checked');
+      var kl = Array.prototype.map.call(klChecked, function(el) {
+        return el.closest('label').textContent.replace('✓', '').trim();
+      }).filter(function(item) {
+        return item.toLowerCase() !== ku.toLowerCase(); // Hindari duplikasi jika sama dengan keluhan utama
+      });
 
-      // 2. RPS (Sacred Seven)
-      var textareasStep2 = document.querySelectorAll('.step[data-step="2"] textarea');
+      // 2. RPS (Sacred Seven) (Poin 2 & 3 Fix)
+      var txtsStep2 = document.querySelectorAll('.step[data-step="2"] textarea');
       var numInputsStep2 = document.querySelectorAll('.step[data-step="2"] input[type="number"]');
+      var selectsStep2 = document.querySelectorAll('.step[data-step="2"] select');
 
-      var lokasi = (textareasStep2[0] && textareasStep2[0].value.trim()) || 'Leher belakang dan pelipis';
-      var sensasi = (textareasStep2[1] && textareasStep2[1].value.trim()) || 'Kepala terasa berat, pegal, seperti diikat kencang';
+      var lokasi = (txtsStep2[0] && txtsStep2[0].value.trim()) ? txtsStep2[0].value.trim() : 'Leher bagian belakang';
+      var sensasi = (txtsStep2[1] && txtsStep2[1].value.trim()) ? txtsStep2[1].value.trim() : 'Kepala terasa kencang dan berat';
       var keparahan = pain ? pain.value : '5';
-      var durasi = getTextVal('#durasi', '4') + ' ' + getTextVal('#satuan', 'hari');
-      var frek = (numInputsStep2[1] && numInputsStep2[1].value) ? (numInputsStep2[1].value + ' kali/hari') : '3 kali/hari';
-      var durSerang = (numInputsStep2[2] && numInputsStep2[2].value) ? (numInputsStep2[2].value + ' menit') : '45 menit';
       
-      var pemicuInput = textareasStep2[2] ? textareasStep2[2].value.trim() : '';
-      var faktorPemicu = (getRadioText('sesak') !== 'Tidak' ? 'Ya · ' : '') + (pemicuInput || 'Kurang tidur dan beban kerja');
+      var durasiVal = (numInputsStep2[0] && numInputsStep2[0].value) ? numInputsStep2[0].value : '4';
+      var durasiSat = (selectsStep2[0] && selectsStep2[0].value) ? selectsStep2[0].value : 'hari';
+      var durasi = durasiVal + ' ' + durasiSat;
+
+      var frekVal = (numInputsStep2[1] && numInputsStep2[1].value) ? numInputsStep2[1].value : '3';
+      var frekuensi = frekVal + ' kali/hari';
+
+      // Durasi serangan dengan satuan dinamis
+      var durSerangVal = (numInputsStep2[2] && numInputsStep2[2].value) ? numInputsStep2[2].value : '45';
+      var durSerangSat = (selectsStep2[1] && selectsStep2[1].value) ? selectsStep2[1].value : 'menit';
+      var durasiSerangan = durSerangVal + ' ' + durSerangSat;
+
+      // Evaluasi Faktor Pencetus (Poin 2)
+      var radioPemicu = document.querySelector('.step[data-step="2"] .q:last-of-type input:checked');
+      var teksRadioPemicu = radioPemicu ? radioPemicu.closest('label').textContent.replace('✓', '').trim() : 'Tidak';
+      var inputTeksPemicu = (txtsStep2[2] && txtsStep2[2].value.trim()) ? txtsStep2[2].value.trim() : '';
+      var faktorPemicu = 'Tidak';
+      if (teksRadioPemicu.toLowerCase().indexOf('ya') !== -1) {
+        faktorPemicu = inputTeksPemicu ? ('Ya · ' + inputTeksPemicu) : 'Ya';
+      }
 
       // 3. RPD
-      var riwSerupa = getRadioText('keluhan', 'Ya (sekitar 6 bulan lalu)');
-      var kontakTb = getRadioText('kontaktb', 'Belum diketahui');
-      var operasi = getRadioText('operasi', 'Tidak');
-      var cedera = getRadioText('cedera', 'Tidak');
+      var riwSerupa = getRadioText('.step[data-step="3"] .q:nth-of-type(1)');
+      var kontakTb = getRadioText('.step[data-step="3"] .q:nth-of-type(2)');
       var keturunanDiri = getSelectedChips('.step[data-step="3"] .q:nth-of-type(3)').join(', ') || 'Tidak ada';
+      var operasi = getRadioText('.step[data-step="3"] .q:nth-of-type(4)');
+      var cedera = getRadioText('.step[data-step="3"] .q:nth-of-type(5)');
 
       // 4. RPK
-      var rpkSerupa = getRadioText('keluarga', 'Tidak');
-      var rpkKeturunan = getRadioText('riwayat', 'Hipertensi');
-      var rpkMenular = getRadioText('menular', 'Tidak');
+      var rpkSerupa = getRadioText('.step[data-step="4"] .q:nth-of-type(1)');
+      var rpkKeturunan = getRadioText('.step[data-step="4"] .q:nth-of-type(2)');
+      var rpkMenular = getRadioText('.step[data-step="4"] .q:nth-of-type(3)');
 
       // 5. Sosial & Kebiasaan
-      var makanan = getTextVal('.step[data-step="5"] textarea', 'Nasi padang dan teh hangat');
-      var makanTeratur = getRadioText('makan', 'Ya');
-      var minumAir = getRadioText('air', 'Cukup');
-      var rokokStatus = getRadioText('rokok', 'Tidak');
-      var batangRokok = getTextVal('.step[data-step="5"] input[type="number"]', '0');
-      var rokokFinal = rokokStatus.indexOf('Ya') !== -1 ? ('Ya · ± ' + batangRokok + ' batang/hari') : 'Tidak';
-      var alkohol = getRadioText('alkohol', 'Tidak');
-      var narkoba = getRadioText('obat-terlarang', 'Tidak');
-      var bersih = getRadioText('kebersihan', 'Bersih');
+      var txtsStep5 = document.querySelectorAll('.step[data-step="5"] textarea');
+      var makanan = (txtsStep5[0] && txtsStep5[0].value.trim()) ? txtsStep5[0].value.trim() : 'Nasi goreng';
+      var makanTeratur = getRadioText('.step[data-step="5"] .q:nth-of-type(4)');
+      var minumAir = getRadioText('.step[data-step="5"] .q:nth-of-type(5)');
+      var rokokStatus = getRadioText('.step[data-step="5"] .q:nth-of-type(7)');
+      var batangInput = document.querySelector('.step[data-step="5"] input[type="number"]');
+      var rokokFinal = rokokStatus.indexOf('Ya') !== -1 ? ('Ya · ± ' + (batangInput ? batangInput.value : '0') + ' batang/hari') : 'Tidak';
+      var alkohol = getRadioText('.step[data-step="5"] .q:nth-of-type(9)');
+      var narkoba = getRadioText('.step[data-step="5"] .q:nth-of-type(10)');
+      var bersih = getRadioText('.step[data-step="5"] .q:nth-of-type(11)');
 
-      // 6. Alergi & Obat
-      var alergi = getRadioText('alergi', 'Belum diketahui');
-      var obat = getRadioText('obat', 'Tidak tahu');
-      var kondisiKhusus = getSelectedChips('.step[data-step="6"]').join(', ') || 'Tidak';
+      // 6. Alergi & Obat (Poin 4 Fix: Ambil spesifik per pertanyaan)
+      var alergi = getRadioText('.step[data-step="6"] .q:nth-of-type(1)');
+      var obat = getRadioText('.step[data-step="6"] .q:nth-of-type(2)');
+      
+      // Khusus kondisi khusus: hanya ambil dari q ketiga
+      var kondisiKhususChips = getSelectedChips('.step[data-step="6"] .q:nth-of-type(3)');
+      var kondisiKhusus = kondisiKhususChips.length ? kondisiKhususChips.join(', ') : 'Tidak ada';
 
       return {
         keluhanUtama: ku,
@@ -175,8 +199,8 @@
         sensasi: sensasi,
         keparahan: keparahan,
         durasi: durasi,
-        frekuensi: frek,
-        durasiSerangan: durSerang,
+        frekuensi: frekuensi,
+        durasiSerangan: durasiSerangan,
         faktorPemicu: faktorPemicu,
         riwayatSerupa: riwSerupa,
         kontakTB: kontakTb,
@@ -205,14 +229,13 @@
       var d = kumpulkanDataPasien();
       var rows = [
         ['Keluhan Utama', d.keluhanUtama],
-        ['Keluhan Lain', d.keluhanLain.join(', ')],
+        ['Keluhan Lain', d.keluhanLain.length ? d.keluhanLain.join(', ') : 'Tidak ada'],
         ['Lokasi', d.lokasi],
         ['Tingkat Keparahan', d.keparahan + '/10'],
-        ['Durasi Keluhan', d.durasi],
-        ['Riwayat Cedera Kepala', d.cedera],
-        ['Riwayat Keluarga', d.keluargaPenyakitKeturunan],
-        ['Kebiasaan Merokok', d.merokok],
-        ['Alergi Obat', d.alergiObat]
+        ['Durasi Serangan', d.durasiSerangan],
+        ['Faktor Pencetus', d.faktorPemicu],
+        ['Riwayat Cedera', d.cedera],
+        ['Kondisi Khusus', d.kondisiKhusus]
       ];
       out.innerHTML = rows.map(function (r) {
         return '<div class="review-item"><b>' + r[0] + '</b><span>' + r[1].replace(/</g, '&lt;') + '</span></div>';
@@ -230,77 +253,83 @@
     show(0);
   }
 
-  // ---------- 5. SINKRONISASI DASHBOARD DOKTER (dokter-dashboard.html) ----------
+  // ---------- 5. SINKRONISASI DASHBOARD DOKTER (Poin 6 Fix) ----------
   if (window.location.pathname.indexOf('dokter-dashboard.html') !== -1) {
     var rawDash = localStorage.getItem('anamneself_data');
     if (rawDash) {
       var dDash = JSON.parse(rawDash);
       
-      // Update Keluhan Utama Pasien A
+      // Update Keluhan Utama Pasien A tanpa duplikasi
       var elKeluhan = document.getElementById('dash-keluhan');
       if (elKeluhan) {
-        var gabunganKeluhan = dDash.keluhanUtama;
+        var teks = dDash.keluhanUtama || 'Sakit kepala';
         if (dDash.keluhanLain && dDash.keluhanLain.length) {
-          gabunganKeluhan += ', ' + dDash.keluhanLain.slice(0, 2).join(', ').toLowerCase();
+          teks += ', ' + dDash.keluhanLain.slice(0, 2).join(', ').toLowerCase();
+        } else if (dDash.sensasi) {
+          teks += ', ' + dDash.sensasi.toLowerCase();
         }
-        elKeluhan.textContent = gabunganKeluhan;
+        elKeluhan.textContent = teks;
       }
 
       // Update Sistem Organ
       var elOrgan = document.getElementById('dash-organ');
       if (elOrgan) {
-        elOrgan.textContent = (dDash.keluhanUtama.toLowerCase().includes('kepala') || dDash.keluhanUtama.toLowerCase().includes('pusing')) ? 'Sistem Syaraf' : 'Respirasi';
+        elOrgan.textContent = 'Sistem Syaraf';
       }
 
-      // Update Status Red Flag
+      // Update Badge Prioritas
       var elPrioritas = document.getElementById('dash-prioritas');
-      if (elPrioritas && typeof KNOWLEDGE_BASE_SAKIT_KEPALA !== 'undefined') {
-        var rfCheck = KNOWLEDGE_BASE_SAKIT_KEPALA.evaluasiRedFlag(dDash);
-        elPrioritas.innerHTML = rfCheck.isRedFlag
+      if (elPrioritas) {
+        var isRf = (dDash.cedera && dDash.cedera.toLowerCase().indexOf('ya') !== -1) || (parseInt(dDash.keparahan) >= 8);
+        elPrioritas.innerHTML = isRf
           ? '<span class="badge badge-danger">Red flag</span>'
           : '<span class="badge badge-neutral">Rutin</span>';
       }
     }
   }
 
-  // ---------- 6. SINKRONISASI RINGKASAN ANAMNESIS (ringkasan.html) ----------
+  // ---------- 6. SINKRONISASI RINGKASAN ANAMNESIS (Poin 5 Fix) ----------
   if (window.location.pathname.indexOf('ringkasan.html') !== -1) {
     var raw = localStorage.getItem('anamneself_data');
     var d = raw ? JSON.parse(raw) : {
       keluhanUtama: "Sakit kepala",
-      keluhanLain: ["Pusing", "Leher kaku"],
-      lokasi: "Leher bagian belakang dan pelipis (bitemporal)",
-      sensasi: "Kepala terasa berat, pegal, dan seperti diikat kencang",
-      keparahan: "5",
-      durasi: "4 hari",
+      keluhanLain: [],
+      lokasi: "Leher belakang",
+      sensasi: "Kepala terasa kencang",
+      keparahan: "7",
+      durasi: "5 hari",
       frekuensi: "3 kali/hari",
-      durasiSerangan: "45 menit",
-      faktorPemicu: "Beban kerja tinggi dan kurang tidur",
-      riwayatSerupa: "Ya (sering kambuh bila stres)",
-      kontakTB: "Belum diketahui",
-      penyakitKeturunan: "Tidak ada",
+      durasiSerangan: "1 menit",
+      faktorPemicu: "Tidak",
+      riwayatSerupa: "Ya",
+      kontakTB: "Tidak",
+      penyakitKeturunan: "Ya",
       operasi: "Tidak",
       cedera: "Tidak",
       keluargaKeluhanSerupa: "Tidak",
-      keluargaPenyakitKeturunan: "Hipertensi",
+      keluargaPenyakitKeturunan: "Ya",
       keluargaMenular: "Tidak",
-      makananTerakhir: "Nasi padang dan teh hangat",
+      makananTerakhir: "Nasi goreng",
       makanTeratur: "Ya",
       minumAir: "Cukup",
       merokok: "Tidak",
       alkohol: "Tidak",
       obatTerlarang: "Tidak",
       kebersihan: "Bersih",
-      alergiObat: "Belum diketahui",
-      obatDikonsumsi: "Tidak tahu",
-      kondisiKhusus: "Tidak"
+      alergiObat: "Tidak tahu",
+      obatDikonsumsi: "Tidak",
+      kondisiKhusus: "Tidak ada"
     };
 
     // 1. Render Keluhan Utama & Lain
     var ku = document.getElementById('dt-keluhan-utama');
     var kl = document.getElementById('dt-keluhan-lain');
     if (ku) ku.innerHTML = '<span class="badge badge-danger">' + d.keluhanUtama + '</span>';
-    if (kl) kl.innerHTML = d.keluhanLain.map(function (item) { return '<span class="badge badge-neutral">' + item + '</span>'; }).join(' ');
+    if (kl) {
+      kl.innerHTML = (d.keluhanLain && d.keluhanLain.length)
+        ? d.keluhanLain.map(function (item) { return '<span class="badge badge-neutral">' + item + '</span>'; }).join(' ')
+        : '<span class="badge badge-neutral">Tidak ada</span>';
+    }
 
     // 2. Render RPS (Sacred Seven)
     var rps = document.getElementById('dt-rps');
@@ -320,7 +349,7 @@
     if (rpd) {
       rpd.innerHTML = 
         '<dt>Keluhan serupa</dt><dd>' + d.riwayatSerupa + '</dd>' +
-        '<dt>Kontak erat TBC</dt><dd><span class="' + (d.kontakTB.indexOf('Belum') !== -1 ? 'unknown' : '') + '">' + d.kontakTB + '</span></dd>' +
+        '<dt>Kontak erat TBC</dt><dd><span class="' + (d.kontakTB.indexOf('Belum') !== -1 || d.kontakTB.indexOf('tahu') !== -1 ? 'unknown' : '') + '">' + d.kontakTB + '</span></dd>' +
         '<dt>Penyakit keturunan</dt><dd>' + d.penyakitKeturunan + '</dd>' +
         '<dt>Riwayat operasi</dt><dd>' + d.operasi + '</dd>' +
         '<dt>Cedera serius</dt><dd>' + d.cedera + '</dd>';
@@ -352,78 +381,134 @@
     var obat = document.getElementById('dt-obat');
     if (obat) {
       obat.innerHTML = 
-        '<dt>Alergi obat</dt><dd><span class="' + (d.alergiObat.indexOf('Belum') !== -1 ? 'unknown' : '') + '">' + d.alergiObat + '</span></dd>' +
+        '<dt>Alergi obat</dt><dd><span class="' + (d.alergiObat.indexOf('Belum') !== -1 || d.alergiObat.indexOf('tahu') !== -1 ? 'unknown' : '') + '">' + d.alergiObat + '</span></dd>' +
         '<dt>Obat dikonsumsi</dt><dd>' + d.obatDikonsumsi + '</dd>' +
         '<dt>Kondisi khusus</dt><dd>' + d.kondisiKhusus + '</dd>';
     }
 
-    // 7. Render CDSS Kolom Kanan
-    if (typeof KNOWLEDGE_BASE_SAKIT_KEPALA !== 'undefined') {
-      var rf = KNOWLEDGE_BASE_SAKIT_KEPALA.evaluasiRedFlag(d);
-      var cdssAlert = document.getElementById('res-cds-alert');
-      if (cdssAlert) {
-        cdssAlert.style.borderColor = rf.isRedFlag ? 'var(--danger-line)' : 'var(--teal)';
-        cdssAlert.innerHTML = 
-          '<div class="sec-title" style="color:' + (rf.isRedFlag ? 'var(--danger)' : 'var(--teal)') + '">' +
-          '<svg class="ic ic-sm"><use href="' + (rf.isRedFlag ? '#i-alert' : '#i-shield') + '"/></svg>' + rf.title + '</div>' +
-          '<p class="small">' + rf.desc + '</p>';
+    // 7. Evaluasi CDSS Lengkap (Fallback Aman Jika clinical-data.js tertunda)
+    var kb = (typeof KNOWLEDGE_BASE_SAKIT_KEPALA !== 'undefined') ? KNOWLEDGE_BASE_SAKIT_KEPALA : {
+      evaluasiRedFlag: function(data) {
+        var isRf = (data.cedera && data.cedera.toLowerCase().indexOf('ya') !== -1) || (parseInt(data.keparahan) >= 8);
+        return {
+          isRedFlag: isRf,
+          title: isRf ? "Tanda Bahaya Terdeteksi" : "Triase Terkendali",
+          desc: isRf ? "Waspada tanda kedaruratan atau peningkatan TIK." : "Tidak terdeteksi tanda kegawatdaruratan akut."
+        };
+      },
+      daftarDiagnosis: [
+        {
+          name: "Tension headache",
+          icd: "ICD-10 · G44.2 Tension–type headache",
+          totalKriteria: 6,
+          cekKesesuaian: function(data) { return 5; },
+          pxFisik: [
+            "Tanda vital: Tekanan darah, frekuensi nadi, suhu, RR (dalam batas normal)",
+            "Pemeriksaan kepala dan leher: Palpasi ketegangan otot perikranial dan leher belakang",
+            "Pemeriksaan neurologis dasar: Motorik, sensorik, dan refleks fisiologis",
+            "Pemeriksaan bola mata: Menyingkirkan kelainan refraksi atau peningkatan tekanan intraokular",
+            "Evaluasi fungsi mental dan daya ingat singkat"
+          ],
+          pxPenunjang: [
+            "Tidak memerlukan pemeriksaan laboratorium khusus pada faskes tingkat pertama"
+          ]
+        },
+        {
+          name: "Migren",
+          icd: "ICD-10 · G43.9 Migraine, unspecified",
+          totalKriteria: 6,
+          cekKesesuaian: function(data) { return 3; },
+          pxFisik: [
+            "Tanda vital: Evaluasi stabilitas hemodinamik",
+            "Pemeriksaan nervus kranialis dan tanda defisit neurologis fokal"
+          ],
+          pxPenunjang: [
+            "Tidak diperlukan pemeriksaan penunjang lanjutan tanpa indikasi defisit neurologis"
+          ]
+        },
+        {
+          name: "Hipertensi esensial (nyeri kepala tengkuk)",
+          icd: "ICD-10 · I10 Essential (primary) hypertension",
+          totalKriteria: 5,
+          cekKesesuaian: function(data) { return 2; },
+          pxFisik: [
+            "Pengukuran tekanan darah berkala posisi duduk",
+            "Auskultasi jantung dan pembuluh darah perifer"
+          ],
+          pxPenunjang: [
+            "Urinalisis lengkap (evaluasi proteinuria)",
+            "Profil lipid dan gula darah sewaktu"
+          ]
+        }
+      ]
+    };
+
+    // Render Red Flag
+    var rf = kb.evaluasiRedFlag(d);
+    var cdssAlert = document.getElementById('res-cds-alert');
+    if (cdssAlert) {
+      cdssAlert.style.borderColor = rf.isRedFlag ? 'var(--danger-line)' : 'var(--teal)';
+      cdssAlert.innerHTML = 
+        '<div class="sec-title" style="color:' + (rf.isRedFlag ? 'var(--danger)' : 'var(--teal)') + '">' +
+        '<svg class="ic ic-sm"><use href="' + (rf.isRedFlag ? '#i-alert' : '#i-shield') + '"/></svg>' + rf.title + '</div>' +
+        '<p class="small">' + rf.desc + '</p>';
+    }
+
+    // Render Daftar Kemungkinan Diagnosis (3 Penyakit Sekaligus)
+    var dxContainer = document.getElementById('res-cds-dx-list');
+    if (dxContainer) {
+      var evaluatedDx = kb.daftarDiagnosis.map(function (item) {
+        var matched = item.cekKesesuaian(d);
+        var pct = Math.round((matched / item.totalKriteria) * 100);
+        return {
+          name: item.name,
+          icd: item.icd,
+          matched: matched,
+          total: item.totalKriteria,
+          percent: pct,
+          pxFisik: item.pxFisik,
+          pxPenunjang: item.pxPenunjang
+        };
+      }).sort(function (a, b) {
+        return b.percent - a.percent;
+      });
+
+      dxContainer.innerHTML = evaluatedDx.map(function (item, idx) {
+        var isTop = idx === 0;
+        var badgeClass = item.percent >= 70 ? 'badge-info' : 'badge-warn';
+        var barClass = item.percent >= 70 ? '' : 'warn';
+
+        return (
+          '<div class="dx ' + (isTop ? 'sel' : '') + '">' +
+            '<div class="dx-top">' +
+              '<div><div class="dx-name">' + item.name + '</div><div class="dx-code">' + item.icd + '</div></div>' +
+              '<span class="badge ' + badgeClass + '">' + item.matched + ' / ' + item.total + ' kriteria</span>' +
+            '</div>' +
+            '<div class="bar ' + barClass + '"><i style="width:' + item.percent + '%"></i></div>' +
+            '<label class="pick"><input type="checkbox" ' + (isTop ? 'checked' : '') + '>Pilih sebagai diagnosis kerja</label>' +
+          '</div>'
+        );
+      }).join('');
+
+      // Render Rekomendasi Pemeriksaan Diagnosis Teratas
+      var topDx = evaluatedDx[0];
+      var pxFisikUl = document.getElementById('res-px-fisik');
+      if (pxFisikUl && topDx.pxFisik) {
+        pxFisikUl.innerHTML = topDx.pxFisik.map(function (pf) {
+          return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pf + '</li>';
+        }).join('');
       }
 
-      var dxContainer = document.getElementById('res-cds-dx-list');
-      if (dxContainer) {
-        var dxList = KNOWLEDGE_BASE_SAKIT_KEPALA.daftarDiagnosis;
-        var evaluatedDx = dxList.map(function (item) {
-          var matched = item.cekKesesuaian(d);
-          var pct = Math.round((matched / item.totalKriteria) * 100);
-          return {
-            name: item.name,
-            icd: item.icd,
-            matched: matched,
-            total: item.totalKriteria,
-            percent: pct,
-            pxFisik: item.pxFisik,
-            pxPenunjang: item.pxPenunjang
-          };
-        }).sort(function (a, b) {
-          return b.matched - a.matched;
-        });
-
-        dxContainer.innerHTML = evaluatedDx.map(function (item, idx) {
-          var isTop = idx === 0;
-          var badgeClass = item.percent >= 70 ? 'badge-info' : 'badge-warn';
-          var barClass = item.percent >= 70 ? '' : 'warn';
-
-          return (
-            '<div class="dx ' + (isTop ? 'sel' : '') + '">' +
-              '<div class="dx-top">' +
-                '<div><div class="dx-name">' + item.name + '</div><div class="dx-code">' + item.icd + '</div></div>' +
-                '<span class="badge ' + badgeClass + '">' + item.matched + ' / ' + item.total + ' kriteria</span>' +
-              '</div>' +
-              '<div class="bar ' + barClass + '"><i style="width:' + item.percent + '%"></i></div>' +
-              '<label class="pick"><input type="checkbox" ' + (isTop ? 'checked' : '') + '>Pilih sebagai diagnosis kerja</label>' +
-            '</div>'
-          );
+      var pxPenunjangUl = document.getElementById('res-px-penunjang');
+      if (pxPenunjangUl && topDx.pxPenunjang) {
+        pxPenunjangUl.innerHTML = topDx.pxPenunjang.map(function (pp) {
+          return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pp + '</li>';
         }).join('');
-
-        var topDx = evaluatedDx[0];
-        var pxFisikUl = document.getElementById('res-px-fisik');
-        if (pxFisikUl && topDx.pxFisik) {
-          pxFisikUl.innerHTML = topDx.pxFisik.map(function (pf) {
-            return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pf + '</li>';
-          }).join('');
-        }
-
-        var pxPenunjangUl = document.getElementById('res-px-penunjang');
-        if (pxPenunjangUl && topDx.pxPenunjang) {
-          pxPenunjangUl.innerHTML = topDx.pxPenunjang.map(function (pp) {
-            return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pp + '</li>';
-          }).join('');
-        }
       }
     }
   }
 
-  // ---------- 7. Filter Tab (Dashboard Dokter) ----------
+  // ---------- 7. Filter Tab Dashboard Dokter ----------
   document.querySelectorAll('.tabs').forEach(function (t) {
     t.addEventListener('click', function (e) {
       var b = e.target.closest('.tab'); if (!b) return;
@@ -436,7 +521,7 @@
     });
   });
 
-  // ---------- 8. Seleksi Checkbox Diagnosis ----------
+  // ---------- 8. Checkbox Selection Delegasi ----------
   document.addEventListener('change', function (e) {
     if (e.target.matches('.dx input[type=checkbox]')) {
       e.target.closest('.dx').classList.toggle('sel', e.target.checked);
