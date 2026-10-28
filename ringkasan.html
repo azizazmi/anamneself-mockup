@@ -76,7 +76,7 @@
                 <svg class="ic ic-sm"><use href="#i-stetho"/></svg>
                 Keluhan Utama
               </div>
-              <div class="row" style="gap: 0.5rem; flex-wrap: wrap;">
+              <div class="row" id="dt-keluhan-utama" style="gap: 0.5rem; flex-wrap: wrap;">
                 <span class="badge badge-danger">Batuk</span>
               </div>
             </div>
@@ -87,7 +87,7 @@
                 <svg class="ic ic-sm"><use href="#i-stetho"/></svg>
                 Keluhan Lain
               </div>
-              <div class="row" style="gap: 0.5rem; flex-wrap: wrap;">
+              <div class="row" id="dt-keluhan-lain" style="gap: 0.5rem; flex-wrap: wrap;">
                 <span class="badge badge-neutral">Demam</span>
                 <span class="badge badge-neutral">Berdahak</span>
                 <span class="badge badge-neutral">Sesak napas</span>
@@ -99,7 +99,7 @@
           <!-- 2. RIWAYAT PENYAKIT SEKARANG -->
           <section class="card">
             <div class="sec-title"><svg class="ic ic-sm"><use href="#i-activity"/></svg>Riwayat Penyakit Sekarang</div>
-            <dl class="kv">
+            <dl class="kv" id="dt-rps">
               <!-- Di mana keluhan dirasakan? -->
               <dt>Lokasi keluhan</dt>
               <dd>Dada tengah dan tenggorokan</dd>
@@ -133,7 +133,7 @@
           <!-- 3. RIWAYAT PENYAKIT DAHULU -->
           <section class="card">
             <div class="sec-title"><svg class="ic ic-sm"><use href="#i-file"/></svg>Riwayat Penyakit Dahulu</div>
-            <dl class="kv">
+            <dl class="kv" id="dt-rpd">
               <!-- Apakah Anda pernah mengalami keluhan serupa di masa lalu? -->
               <dt>Keluhan serupa</dt>
               <dd>Ya (sekitar 6 bulan yang lalu)</dd>
@@ -159,7 +159,7 @@
           <!-- 4. RIWAYAT PENYAKIT KELUARGA -->
           <section class="card">
             <div class="sec-title"><svg class="ic ic-sm"><use href="#i-users"/></svg>Riwayat Penyakit Keluarga</div>
-            <dl class="kv">
+            <dl class="kv" id="dt-rpk">
               <!-- Apakah ada anggota keluarga yang mengalami keluhan serupa dengan yang Anda alami saat ini? -->
               <dt>Keluhan serupa</dt>
               <dd>Ya (anak batuk dan pilek 3 hari lalu)</dd>
@@ -177,7 +177,7 @@
           <!-- 5. RIWAYAT SOSIAL DAN KEBIASAAN -->
           <section class="card">
             <div class="sec-title"><svg class="ic ic-sm"><use href="#i-user"/></svg>Riwayat Sosial dan Kebiasaan</div>
-            <dl class="kv">
+            <dl class="kv" id="dt-sosial">
               <!-- Apakah Anda memiliki masalah dengan anggota keluarga saat ini? -->
               <dt>Masalah keluarga</dt>
               <dd>Tidak</dd>
@@ -223,7 +223,7 @@
           <!-- 6. ALERGI & OBAT -->
           <section class="card">
             <div class="sec-title"><svg class="ic ic-sm"><use href="#i-flask"/></svg>Alergi &amp; Obat</div>
-            <dl class="kv">
+            <dl class="kv" id="dt-obat">
               <!-- Apakah Anda memiliki alergi obat? -->
               <dt>Alergi obat</dt>
               <dd><span class="unknown"><svg class="ic ic-sm"><use href="#i-help"/></svg>Belum diketahui</span></dd>
@@ -248,7 +248,7 @@
         <!-- KOLOM KANAN: CDSS -->
         <aside class="grid sticky-side" style="align-content:start">
 
-          <section class="card" style="border-color:var(--danger-line)">
+          <section class="card" id="res-cds-alert" style="border-color:var(--danger-line)">
             <div class="sec-title" style="color:var(--danger)"><svg class="ic ic-sm"><use href="#i-alert"/></svg>Tanda bahaya terdeteksi</div>
             <p class="small">Kombinasi <b>demam &gt; 3 hari</b> dan <b>sesak napas</b> memenuhi aturan penanda untuk evaluasi lebih lanjut. Disarankan pengukuran SpO₂ dan frekuensi napas lebih dulu.</p>
           </section>
