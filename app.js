@@ -34,6 +34,30 @@
   s += '</svg>';
   document.body.insertAdjacentHTML('afterbegin', s);
 
+  // ---------- Login: arahkan sesuai peran ----------
+  var login = document.querySelector('[data-login]');
+  if (login) {
+    login.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var roleEl = login.querySelector('input[name="role"]:checked');
+      var role = roleEl ? roleEl.value : 'pasien';
+      window.location.href = role === 'dokter' ? 'dokter-dashboard.html' : 'pasien-dashboard.html';
+    });
+
+    var hint = document.getElementById('role-hint');
+    login.querySelectorAll('input[name="role"]').forEach(function (r) {
+      r.addEventListener('change', function () {
+        if (hint) {
+          hint.textContent = r.value === 'dokter'
+            ? 'Akses untuk dokter umum dan pengelola klinik/FKTP.'
+            : 'Akses untuk pasien yang akan berkunjung ke klinik.';
+        }
+        var idLabel = document.getElementById('id-label');
+        if (idLabel) idLabel.textContent = 'Email / NIK';
+      });
+    });
+  }
+
   // ---------- 2. Helper Pembaca Universal (Chip, Radio, Text) ----------
   function getCheckedText(containerSelector) {
     var c = document.querySelector(containerSelector);
