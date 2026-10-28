@@ -265,24 +265,56 @@
         '<dt>Kondisi khusus</dt><dd>' + d.kondisiKhusus + '</dd>';
     }
 
-    // ---------- 5. LOGIKA EVALUASI CDSS (KOLOM KANAN) ----------
-    var isNafas = (d.keluhanUtama === 'Batuk' || d.keluhanLain.indexOf('Sesak napas') !== -1 || d.keluhanLain.indexOf('Batuk') !== -1);
-    var isSesak = d.keluhanLain.indexOf('Sesak napas') !== -1;
-    var isDemam = d.keluhanLain.indexOf('Demam') !== -1;
+    // ---------- 5. LOGIKA EVALUASI CDSS (KOLOM KANAN) ----------  
+    // ---------- RENDER CDSS (KOLOM KANAN) ----------
+    if (typeof KNOWLEDGE_BASE_SAKIT_KEPALA !== 'undefined') {
+      // 1. Evaluasi Red Flags
+      var rf = KNOWLEDGE_BASE_SAKIT_KEPALA.evaluasiRedFlag(d);
+      var cdssAlert = document.getElementById('res-cds-alert');
+      if (cdssAlert) {
+        cdssAlert.style.borderColor = rf.isRedFlag ? 'var(--danger-line)' : 'var(--teal)';
+        cdssAlert.innerHTML = 
+          '<div class="sec-title" style="color:' + (rf.isRedFlag ? 'var(--danger)' : 'var(--teal)') + '">' +
+          '<svg class="ic ic-sm"><use href="' + (rf.isRedFlag ? '#i-alert' : '#i-shield') + '"/></svg>' + rf.title + '</div>' +
+          '<p class="small">' + rf.desc + '</p>';
+      }
 
-    // Evaluasi Red Flag Triase
-    var cdssAlert = document.getElementById('res-cds-alert');
-    if (cdssAlert) {
-      if (isSesak && isDemam) {
-        cdssAlert.style.borderColor = 'var(--danger-line)';
-        cdssAlert.innerHTML = 
-          '<div class="sec-title" style="color:var(--danger)"><svg class="ic ic-sm"><use href="#i-alert"/></svg>Tanda bahaya terdeteksi</div>' +
-          '<p class="small">Kombinasi <b>demam</b> dan <b>sesak napas</b> memenuhi penanda triase primer. Prioritaskan evaluasi SpO₂ dan frekuensi napas.</p>';
-      } else {
-        cdssAlert.style.borderColor = 'var(--border, #e2e8f0)';
-        cdssAlert.innerHTML = 
-          '<div class="sec-title" style="color:var(--teal, #0d9488)"><svg class="ic ic-sm"><use href="#i-shield"/></svg>Status Triase Terkendali</div>' +
-          '<p class="small">Tidak ada tanda kegawatdaruratan akut berisiko tinggi. Konsultasi dapat berjalan sesuai urutan antrean.</p>';
+      // 2. Evaluasi Diagnosis Banding & Skor Kriteria
+      var dxContainer = document.getElementById('res-cds-dx-list');
+      var dxList = KNOWLEDGE_BASE_SAKIT_KEPALA.daftarDiagnosis;
+      
+      if (dxContainer) {
+        dxContainer.innerHTML = dxList.map(function(item, idx) {
+          var matched = item.cekKesesuaian(d);
+          var pct = Math.round((matched / item.totalKriteria) * 100);
+          var isTop = idx === 0;
+          return (
+            '<div class="dx ' + (isTop ? 'sel' : '') + '">' +
+              '<div class="dx-top">' +
+                '<div><div class="dx-name">' + item.name + '</div><div class="dx-code">' + item.icd + '</div></div>' +
+                '<span class="badge ' + (pct >= 70 ? 'badge-info' : 'badge-warn') + '">' + matched + ' / ' + item.totalKriteria + ' kriteria</span>' +
+              '</div>' +
+              '<div class="bar ' + (pct >= 70 ? '' : 'warn') + '"><i style="width:' + pct + '%"></i></div>' +
+              '<label class="pick"><input type="checkbox" ' + (isTop ? 'checked' : '') + '>Pilih sebagai diagnosis kerja</label>' +
+            '</div>'
+          );
+        }).join('');
+      }
+
+      // 3. Render Pemeriksaan Fisik & Penunjang Diagnosis Teratas
+      var topDx = dxList[0];
+      var pxFisikUl = document.getElementById('res-px-fisik');
+      if (pxFisikUl) {
+        pxFisikUl.innerHTML = topDx.pxFisik.map(function(pf) {
+          return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pf + '</li>';
+        }).join('');
+      }
+
+      var pxPenunjangUl = document.getElementById('res-px-penunjang');
+      if (pxPenunjangUl) {
+        pxPenunjangUl.innerHTML = topDx.pxPenunjang.map(function(pp) {
+          return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pp + '</li>';
+        }).join('');
       }
     }
   }
