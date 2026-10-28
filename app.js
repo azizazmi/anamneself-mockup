@@ -281,40 +281,59 @@
 
       // 2. Evaluasi Diagnosis Banding & Skor Kriteria
       var dxContainer = document.getElementById('res-cds-dx-list');
-      var dxList = KNOWLEDGE_BASE_SAKIT_KEPALA.daftarDiagnosis;
-      
-      if (dxContainer) {
-        dxContainer.innerHTML = dxList.map(function(item, idx) {
+      if (dxContainer && typeof KNOWLEDGE_BASE_SAKIT_KEPALA !== 'undefined') {
+        var dxList = KNOWLEDGE_BASE_SAKIT_KEPALA.daftarDiagnosis;
+
+        // Hitung kecocokan tiap diagnosis dan urutkan dari kecocokan tertinggi
+        var evaluatedDx = dxList.map(function (item) {
           var matched = item.cekKesesuaian(d);
           var pct = Math.round((matched / item.totalKriteria) * 100);
+          return {
+            name: item.name,
+            icd: item.icd,
+            matched: matched,
+            total: item.totalKriteria,
+            percent: pct,
+            pxFisik: item.pxFisik,
+            pxPenunjang: item.pxPenunjang
+          };
+        }).sort(function (a, b) {
+          return b.matched - a.matched; // Diagnosis dengan kriteria tertinggi di posisi teratas
+        });
+
+        // Render elemen .dx ke dalam container
+        dxContainer.innerHTML = evaluatedDx.map(function (item, idx) {
           var isTop = idx === 0;
+          var badgeClass = item.percent >= 70 ? 'badge-info' : 'badge-warn';
+          var barClass = item.percent >= 70 ? '' : 'warn';
+
           return (
             '<div class="dx ' + (isTop ? 'sel' : '') + '">' +
               '<div class="dx-top">' +
                 '<div><div class="dx-name">' + item.name + '</div><div class="dx-code">' + item.icd + '</div></div>' +
-                '<span class="badge ' + (pct >= 70 ? 'badge-info' : 'badge-warn') + '">' + matched + ' / ' + item.totalKriteria + ' kriteria</span>' +
+                '<span class="badge ' + badgeClass + '">' + item.matched + ' / ' + item.total + ' kriteria</span>' +
               '</div>' +
-              '<div class="bar ' + (pct >= 70 ? '' : 'warn') + '"><i style="width:' + pct + '%"></i></div>' +
+              '<div class="bar ' + barClass + '"><i style="width:' + item.percent + '%"></i></div>' +
               '<label class="pick"><input type="checkbox" ' + (isTop ? 'checked' : '') + '>Pilih sebagai diagnosis kerja</label>' +
             '</div>'
           );
         }).join('');
-      }
 
-      // 3. Render Pemeriksaan Fisik & Penunjang Diagnosis Teratas
-      var topDx = dxList[0];
-      var pxFisikUl = document.getElementById('res-px-fisik');
-      if (pxFisikUl) {
-        pxFisikUl.innerHTML = topDx.pxFisik.map(function(pf) {
-          return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pf + '</li>';
-        }).join('');
-      }
+        // Perbarui checklist Pemeriksaan Fisik & Penunjang sesuai diagnosis teratas
+        var topDx = evaluatedDx[0];
+        var pxFisikUl = document.getElementById('res-px-fisik');
+        if (pxFisikUl && topDx.pxFisik) {
+          pxFisikUl.innerHTML = topDx.pxFisik.map(function (pf) {
+            return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pf + '</li>';
+          }).join('');
+        }
 
-      var pxPenunjangUl = document.getElementById('res-px-penunjang');
-      if (pxPenunjangUl) {
-        pxPenunjangUl.innerHTML = topDx.pxPenunjang.map(function(pp) {
-          return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pp + '</li>';
-        }).join('');
+        var pxPenunjangUl = document.getElementById('res-px-penunjang');
+        if (pxPenunjangUl && topDx.pxPenunjang) {
+          pxPenunjangUl.innerHTML = topDx.pxPenunjang.map(function (pp) {
+            return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pp + '</li>';
+          }).join('');
+        }
       }
     }
   }
