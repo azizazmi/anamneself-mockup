@@ -80,13 +80,19 @@
                 <tr><th>Pasien</th><th>Keluhan utama</th><th>Sistem organ</th><th>Anamnesis</th><th>Prioritas</th><th></th></tr>
               </thead>
               <tbody>
-                <tr data-status="selesai">
-                  <td><div class="pt"><div class="avatar">SA</div><div><b>Pasien Sintetis A</b><span>34 th · L · 09.30</span></div></div></td>
-                  <td data-label="Keluhan">Batuk berdahak, demam, sesak ringan</td>
-                  <td data-label="Sistem organ">Respirasi</td>
-                  <td data-label="Anamnesis"><span class="badge badge-success"><span class="dot"></span>Selesai</span></td>
-                  <td data-label="Prioritas"><span class="badge badge-danger">Red flag</span></td>
-                  <td><a href="ringkasan.html" class="btn btn-primary btn-sm">Tinjau</a></td>
+                <!-- Baris Pasien A -->
+                <tr>
+                  <td>
+                    <div class="user-chip">
+                      <div class="avatar">SA</div>
+                      <div><b>Pasien Sintetis A</b><div class="xs muted">34 th · L · 09.30</div></div>
+                    </div>
+                  </td>
+                  <td id="dash-keluhan">Batuk berdahak, demam, sesak ringan</td>
+                  <td id="dash-organ">Respirasi</td>
+                  <td><span class="badge badge-success">Selesai</span></td>
+                  <td id="dash-prioritas"><span class="badge badge-danger">Red flag</span></td>
+                  <td><a href="ringkasan.html" class="btn btn-outline btn-sm">Lihat ringkasan</a></td>
                 </tr>
                 <tr data-status="selesai">
                   <td><div class="pt"><div class="avatar">SB</div><div><b>Pasien Sintetis B</b><span>52 th · P · 09.45</span></div></div></td>
