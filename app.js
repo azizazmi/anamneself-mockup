@@ -197,27 +197,27 @@
   if (window.location.pathname.indexOf('ringkasan.html') !== -1) {
     var raw = localStorage.getItem('anamneself_data');
     var d = raw ? JSON.parse(raw) : {
-      keluhanUtama: "Batuk",
-      keluhanLain: ["Demam", "Sesak napas", "Nyeri tenggorokan"],
-      lokasi: "Dada tengah dan tenggorokan",
-      sensasi: "Batuk berdahak kental, dada terasa berat saat menarik napas",
-      keparahan: "6",
-      durasi: "5 hari",
-      frekuensi: "5 kali/hari",
-      durasiSerangan: "10 menit",
-      faktorPemicu: "Terpapar udara dingin malam hari",
-      riwayatSerupa: "Ya (sekitar 6 bulan lalu)",
+      keluhanUtama: "Sakit kepala",
+      keluhanLain: ["Pusing", "Leher kaku"],
+      lokasi: "Leher bagian belakang dan pelipis (bitemporal)",
+      sensasi: "Kepala terasa berat, pegal, dan seperti diikat kencang",
+      keparahan: "5",
+      durasi: "4 hari",
+      frekuensi: "3 kali/hari",
+      durasiSerangan: "45 menit",
+      faktorPemicu: "Beban kerja tinggi dan kurang tidur",
+      riwayatSerupa: "Ya (sering kambuh bila stres)",
       kontakTB: "Belum diketahui",
-      penyakitKeturunan: "Asma",
+      penyakitKeturunan: "Tidak ada",
       operasi: "Tidak",
       cedera: "Tidak",
-      keluargaKeluhanSerupa: "Ya (anak batuk pilek)",
-      keluargaPenyakitKeturunan: "Ya (ibu asma)",
+      keluargaKeluhanSerupa: "Tidak",
+      keluargaPenyakitKeturunan: "Hipertensi",
       keluargaMenular: "Tidak",
-      makananTerakhir: "Nasi goreng pedas",
-      merokok: "Ya (± 10 batang/hari)",
+      makananTerakhir: "Nasi padang dan teh hangat",
+      merokok: "Tidak",
       alergiObat: "Belum diketahui",
-      obatDikonsumsi: "Ya (Parasetamol bila demam)",
+      obatDikonsumsi: "Parasetamol bila perlu",
       kondisiKhusus: "Tidak ada"
     };
 
@@ -351,7 +351,9 @@
     });
   });
 
-  document.querySelectorAll('.dx input[type=checkbox]').forEach(function (c) {
-    c.addEventListener('change', function () { c.closest('.dx').classList.toggle('sel', c.checked); });
+  document.addEventListener('change', function (e) {
+    if (e.target.matches('.dx input[type=checkbox]')) {
+      e.target.closest('.dx').classList.toggle('sel', e.target.checked);
+    }
   });
 })();
