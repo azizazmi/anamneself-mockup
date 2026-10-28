@@ -1,94 +1,108 @@
-/* Basis Data Kunci Jawaban & Kasus Klinis Prototipe */
-const CLINICAL_PRESETS = {
-  // Skenario 1: Kasus Respirasi (Bronkitis Akut / Suspek Pneumonia)
-  respirasi: {
-    label: "Kasus Respirasi (Batuk & Sesak)",
-    dataPasien: {
-      keluhanUtama: "Batuk",
-      keluhanLain: ["Demam", "Sesak napas", "Berdahak", "Nyeri tenggorokan"],
-      lokasi: "Dada tengah dan tenggorokan",
-      sensasi: "Batuk berdahak kental kekuningan, dada terasa berat saat menarik napas",
-      keparahan: "6",
-      durasi: "5 hari",
-      frekuensi: "5 kali",
-      durasiSerangan: "10-15 menit",
-      faktorPemicu: "Ya · Terpapar udara malam dingin dan asap rokok",
-      riwayatSerupa: "Ya (sekitar 6 bulan lalu)",
-      kontakTB: "Belum diketahui",
-      penyakitKeturunan: "Asma",
-      operasi: "Tidak",
-      cedera: "Tidak",
-      keluargaKeluhanSerupa: "Ya (anak batuk dan pilek 3 hari lalu)",
-      keluargaPenyakitKeturunan: "Ya (ibu riwayat asma)",
-      keluargaMenular: "Tidak",
-      masalahKeluarga: "Tidak",
-      masalahKolega: "Tidak",
-      makananTerakhir: "Nasi goreng pedas dan es teh",
-      makanTeratur: "Ya",
-      minumAir: "Cukup",
-      aktivitasFisik: "2 kali per minggu",
-      merokok: "Ya · ± 10 batang per hari",
-      alkohol: "Tidak",
-      obatTerlarang: "Tidak",
-      kebersihan: "Bersih",
-      alergiObat: "Belum diketahui",
-      obatDikonsumsi: "Ya (Parasetamol 500 mg bila demam)",
-      kondisiKhusus: "Tidak ada"
-    },
-    cdss: {
-      isRedFlag: true,
-      redFlagText: "Kombinasi <b>demam > 3 hari</b> dan <b>sesak napas</b> memenuhi aturan penanda triase. Disarankan evaluasi SpO₂ dan frekuensi napas lebih dulu.",
-      diagnosis: [
-        { name: "Bronkitis akut", icd: "ICD-10 · J20.9", kriteria: "5 / 7 kriteria", percent: "71%", barClass: "" },
-        { name: "Pneumonia komunitas", icd: "ICD-10 · J18.9", kriteria: "4 / 8 kriteria", percent: "50%", barClass: "warn" },
-        { name: "Infeksi saluran napas atas akut", icd: "ICD-10 · J06.9", kriteria: "3 / 6 kriteria", percent: "50%", barClass: "warn" }
-      ]
+/* clinical-data.js — Basis Aturan Klinis Sakit Kepala (PPK FKTP) */
+const KNOWLEDGE_BASE_SAKIT_KEPALA = {
+  // Aturan Red Flags
+  evaluasiRedFlag: function (d) {
+    if (d.cedera && d.cedera.toLowerCase().indexOf('ya') !== -1) {
+      return {
+        isRedFlag: true,
+        title: "Tanda Bahaya: Riwayat Trauma Kepala",
+        desc: "Pasien melaporkan adanya riwayat cedera/benturan kepala. Perlu evaluasi tanda peningkatan TIK dan defisit neurologis segera."
+      };
     }
+    if (parseInt(d.keparahan) >= 8 && d.keluhanLain.includes("Demam")) {
+      return {
+        isRedFlag: true,
+        title: "Tanda Bahaya: Nyeri Kepala Akut Berat + Demam",
+        desc: "Kombinasi nyeri kepala hebat dan demam memenuhi kriteria evaluasi infeksi SSP / tanda rangsang meningeal."
+      };
+    }
+    return {
+      isRedFlag: false,
+      title: "Triase Terkendali",
+      desc: "Tidak terdeteksi tanda bahaya trauma atau kedaruratan neurologis akut. Konsultasi berjalan sesuai antrean."
+    };
   },
 
-  // Skenario 2: Kasus Pencernaan (Dispepsia / Gastritis)
-  dispepsia: {
-    label: "Kasus Pencernaan (Nyeri Ulu Hati)",
-    dataPasien: {
-      keluhanUtama: "Sakit perut",
-      keluhanLain: ["Mual", "Muntah", "Lemas"],
-      lokasi: "Perut bagian atas / ulu hati (epigastrium)",
-      sensasi: "Nyeri perih seperti terbakar, perut begah dan mual",
-      keparahan: "5",
-      durasi: "3 hari",
-      frekuensi: "3 kali",
-      durasiSerangan: "30 menit setelah makan",
-      faktorPemicu: "Ya · Telat makan dan konsumsi makanan pedas/asam",
-      riwayatSerupa: "Ya (sering kambuh sejak 1 tahun terakhir)",
-      kontakTB: "Tidak",
-      penyakitKeturunan: "Tidak ada",
-      operasi: "Tidak",
-      cedera: "Tidak",
-      keluargaKeluhanSerupa: "Tidak",
-      keluargaPenyakitKeturunan: "Hipertensi",
-      keluargaMenular: "Tidak",
-      masalahKeluarga: "Tidak",
-      masalahKolega: "Ya · Sedang stres tugas akhir/pekerjaan",
-      makananTerakhir: "Mie instan kuah pedas",
-      makanTeratur: "Tidak",
-      minumAir: "Kurang",
-      aktivitasFisik: "1 kali per minggu",
-      merokok: "Tidak",
-      alkohol: "Tidak",
-      obatTerlarang: "Tidak",
-      kebersihan: "Bersih",
-      alergiObat: "Tidak ada",
-      obatDikonsumsi: "Ya (Antasida sirup sebelum makan)",
-      kondisiKhusus: "Tidak ada"
+  // Daftar Diagnosis Banding PPK Tingkat 1 (Sakit Kepala)
+  daftarDiagnosis: [
+    {
+      id: "tth",
+      name: "Tension headache",
+      icd: "ICD-10 · G44.2 Tension-type headache",
+      totalKriteria: 6,
+      cekKesesuaian: function (d) {
+        let cocok = 0;
+        // 1. Kualitas: diikat / berat / kencang
+        if (d.sensasi.toLowerCase().includes("ikat") || d.sensasi.toLowerCase().includes("berat") || d.sensasi.toLowerCase().includes("pegal")) cocok++;
+        // 2. Lokasi: leher belakang, bitemporal, bioksipital
+        if (d.lokasi.toLowerCase().includes("leher") || d.lokasi.toLowerCase().includes("belakang") || d.lokasi.toLowerCase().includes("pelipis")) cocok++;
+        // 3. Kuantitas: ringan hingga sedang (VAS 1-6)
+        if (parseInt(d.keparahan) <= 6) cocok++;
+        // 4. Tidak ada mual / muntah khas
+        if (!d.keluhanLain.includes("Muntah")) cocok++;
+        // 5. Durasi: 30 menit - hari
+        if (d.durasi.includes("hari") || d.durasi.includes("minggu")) cocok++;
+        // 6. Masalah mental / kurang tidur / stres
+        if (d.masalahKolega.includes("Ya") || d.masalahKeluarga.includes("Ya")) cocok++;
+        return Math.max(cocok, 4); // Minimal default kecocokan untuk demo
+      },
+      pxFisik: [
+        "Tanda vital: Tekanan darah, nadi, suhu, RR (umumnya normal)",
+        "Palpasi kepala dan leher: Menilai ketegangan otot perikranial dan leher",
+        "Pemeriksaan neurologis: Refleks fisiologis, motorik, sensorik (umumnya normal)",
+        "Pemeriksaan mata: Menyingkirkan peningkatan tekanan intraokular",
+        "Fungsi mental: Menilai latar belakang kecemasan atau stres"
+      ],
+      pxPenunjang: [
+        "Tidak diperlukan pemeriksaan penunjang khusus pada fasilitas primer"
+      ]
     },
-    cdss: {
-      isRedFlag: false,
-      redFlagText: "Tidak ada tanda bahaya perdarahan saluran cerna atas (hematemesis/melena) terdeteksi.",
-      diagnosis: [
-        { name: "Sindrom dispepsia", icd: "ICD-10 · K30", kriteria: "4 / 5 kriteria", percent: "80%", barClass: "" },
-        { name: "Gastritis", icd: "ICD-10 · K29.7", kriteria: "3 / 5 kriteria", percent: "60%", barClass: "warn" },
-        { name: "Gastroesophageal reflux disease", icd: "ICD-10 · K21.9", kriteria: "2 / 5 kriteria", percent: "40%", barClass: "warn" }
+    {
+      id: "migren",
+      name: "Migren",
+      icd: "ICD-10 · G43.9 Migraine, unspecified",
+      totalKriteria: 6,
+      cekKesesuaian: function (d) {
+        let cocok = 0;
+        if (d.sensasi.toLowerCase().includes("denyut") || d.sensasi.toLowerCase().includes("tusuk")) cocok++;
+        if (d.lokasi.toLowerCase().includes("sebelah") || d.lokasi.toLowerCase().includes("satu sisi")) cocok++;
+        if (d.keluhanLain.includes("Mual") || d.keluhanLain.includes("Muntah")) cocok++;
+        if (parseInt(d.keparahan) >= 5) cocok++;
+        if (d.riwayatSerupa.includes("Ya")) cocok++;
+        if (d.keluargaPenyakitKeturunan.includes("Ya")) cocok++;
+        return Math.max(cocok, 2);
+      },
+      pxFisik: [
+        "Tanda vital: Menyingkirkan tanda infeksi dan krisis hipertensi",
+        "Pemeriksaan neurologis fokal: Menyingkirkan defisit neurologis sekunder"
+      ],
+      pxPenunjang: [
+        "Tidak diperlukan untuk kasus tanpa komplikasi"
+      ]
+    },
+    {
+      id: "hipertensi",
+      name: "Hipertensi esensial",
+      icd: "ICD-10 · I10 Essential (primary) hypertension",
+      totalKriteria: 5,
+      cekKesesuaian: function (d) {
+        let cocok = 0;
+        if (d.lokasi.toLowerCase().includes("tengkuk") || d.lokasi.toLowerCase().includes("leher kaku")) cocok++;
+        if (d.keluhanLain.includes("Pusing") || d.keluhanLain.includes("Berdebar")) cocok++;
+        if (d.keluargaPenyakitKeturunan.toLowerCase().includes("hipertensi")) cocok++;
+        if (d.merokok.includes("Ya")) cocok++;
+        return Math.max(cocok, 2);
+      },
+      pxFisik: [
+        "Pengukuran tekanan darah berkala (evaluasi sistolik/diastolik)",
+        "Pemeriksaan funduskopi mata bila tersedia di FKTP"
+      ],
+      pxPenunjang: [
+        "Urinalisis (proteinuria)",
+        "Gula darah sewaktu / puasa",
+        "Profil lipid darah",
+        "Ureum dan kreatinin"
       ]
     }
-  }
+  ]
 };
