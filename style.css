@@ -293,6 +293,71 @@ tbody tr:last-child td{border-bottom:0}
 .rule-note{font-size:.78rem;color:var(--muted);display:flex;gap:.4rem;align-items:flex-start;margin-top:.75rem}
 .sticky-side{position:sticky;top:5rem;align-self:start}
 
+/* ===== TAMBAHAN ATURAN LAYOUT BARU RINGKASAN ANAMNESIS ===== */
+.flow-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+#res-cds-dx-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 992px) {
+  #res-cds-dx-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.anamnesis-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+@media (min-width: 768px) {
+  .anamnesis-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.rec-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+@media (min-width: 768px) {
+  .rec-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Accordion detail kriteria di kartu diagnosis */
+.dx details summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 0;
+  transition: color 0.15s ease;
+}
+.dx details summary::-webkit-details-marker {
+  display: none;
+}
+.dx details summary::after {
+  content: "▾";
+  font-size: 0.85rem;
+  transition: transform 0.2s ease;
+}
+.dx details[open] summary::after {
+  transform: rotate(180deg);
+}
+
 /* ---------- Login ---------- */
 .auth{min-height:100vh;display:grid;grid-template-columns:1.05fr 1fr}
 .auth-aside{
