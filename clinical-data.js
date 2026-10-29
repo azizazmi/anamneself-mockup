@@ -1,5 +1,5 @@
-/* clinical-data.js — Matriks Basis Pengetahuan Sakit Kepala (PPK 144 FKTP) Berbasis Matriks Excel */
-/* Kamus Kode Gejala Sesuai Opsi Jawaban Matriks Gejala Excel */
+/* clinical-data.js — Matriks Basis Pengetahuan Sakit Kepala Berbobot (PPK 144 FKTP) */
+
 const KAMUS_GEJALA = {
   "ONS06": "Muncul setelah benturan/cedera kepala",
   "LOK01": "Seluruh kepala / terasa menyebar",
@@ -21,7 +21,7 @@ const KAMUS_GEJALA = {
   "INT04": "Nyeri terhebat yang pernah dirasakan",
   "ONS01": "Onset mendadak",
   "ONS02": "Onset pelan-pelan memberat",
-  "ONS03": "Didahului gejala aura / prodromal",
+  "ONS03": "Didahului gejala awal / prodromal",
   "FRE01": "Serangan pertama kali",
   "FRE02": "Episodik (< 15 hari/bulan)",
   "FRE03": "Kronis (≥ 15 hari/bulan selama 6 bulan)",
@@ -100,7 +100,7 @@ const KAMUS_GEJALA = {
 };
 
 const KNOWLEDGE_BASE_SAKIT_KEPALA = {
-  // 1. Evaluasi Tanda Bahaya (Red Flags) & Triase
+  // Evaluasi Red Flag & Triase
   evaluasiRedFlag: function (d) {
     var codes = d.codes || [];
     var isTrauma = d.isTraumaGate || codes.indexOf('ONS06') !== -1;
@@ -112,46 +112,48 @@ const KNOWLEDGE_BASE_SAKIT_KEPALA = {
     if (isTrauma) {
       return {
         isRedFlag: true,
-        priority: "danger",
         badge: "Red flag / Trauma",
         title: "Tanda Bahaya: Riwayat Benturan / Trauma Kepala (Gate Trauma)",
-        desc: "Pasien memiliki riwayat benturan atau cedera kepala dalam beberapa hari terakhir. Pasien masuk jalur trauma kepala untuk evaluasi tanda fraktur basis cranii, peningkatan TIK, atau perdarahan intrakranial."
+        desc: "Pasien memiliki riwayat benturan atau cedera kepala dalam beberapa hari terakhir. Pasien masuk jalur trauma kepala untuk evaluasi tanda peningkatan TIK atau perdarahan intrakranial."
       };
     }
 
     if (isRF01 || isRF02 || isRF03 || isThunderclap) {
       var details = [];
-      if (isRF01) details.push("Defisit neurologis fokal (kelemahan satu sisi/bicara pelo/wajah mencong)");
-      if (isRF02) details.push("Penurunan kesadaran atau kejang");
-      if (isRF03) details.push("Tanda rangsang meningeal (kaku kuduk disertai demam)");
-      if (isThunderclap) details.push("Nyeri kepala intensitas terhebat yang mendadak (thunderclap headache)");
+      if (isRF01) details.push("Defisit neurologis fokal");
+      if (isRF02) details.push("Penurunan kesadaran / kejang");
+      if (isRF03) details.push("Kaku kuduk disertai demam");
+      if (isThunderclap) details.push("Nyeri kepala mendadak sangat hebat");
 
       return {
         isRedFlag: true,
-        priority: "danger",
         badge: "Red flag / Gawat",
         title: "Tanda Bahaya: Terdeteksi Red Flag Neurologis Akut",
-        desc: "Ditemukan tanda bahaya: " + details.join(', ') + ". Diindikasikan evaluasi segera dan stabilisasi/rujukan ke fasilitas gawat darurat."
+        desc: "Ditemukan tanda bahaya: " + details.join(', ') + ". Diindikasikan evaluasi segera dan stabilisasi/rujukan gawat darurat."
       };
     }
 
     return {
       isRedFlag: false,
-      priority: "neutral",
       badge: "Triase Terkendali",
       title: "Status Triase Terkendali",
       desc: "Tidak terdeteksi tanda bahaya trauma akut atau kegawatan sekunder mayor pada screening awal. Pemeriksaan dapat berjalan sesuai alur rawat jalan FKTP."
     };
   },
 
-  // 2. Daftar 15 Diagnosis Banding Sesuai Matriks Gejala Excel (SKDI Level 4A)
+  // Daftar Diagnosis Berbobot (Bobot 3 = Inti, 2 = Pendukung, 1 = Risiko/Konteks)
   daftarDiagnosis: [
     {
       id: "tth",
+      no: 4,
       name: "Tension headache",
       icd: "ICD-10 · G44.2 Tension-type headache",
-      jalur: "Tanpa demam",
-      kriteriaCodes: ['LOK01', 'LOK04', 'LOK05', 'LOK06', 'KUA01', 'INT01', 'INT02', 'FRE02', 'FRE03', 'FRE04', 'DUR02', 'DUR04', 'PRE06', 'RPD09', 'KEB02', 'PEN22', 'PEN09', 'PEN32', 'PEN26'],
+      maxScore: 36,
+      weights: {
+        'KUA01': 3,
+        'LOK01': 2, 'LOK04': 2, 'LOK05': 2, 'LOK06': 2, 'INT01': 2, 'INT02': 2, 'FRE02': 2, 'FRE03': 2, 'FRE04': 2, 'DUR02': 2, 'DUR04': 2, 'PEN22': 2, 'PEN09': 2, 'PEN32': 2, 'PEN26': 2,
+        'PRE06': 1, 'RPD09': 1, 'KEB02': 1
+      },
       pxFisik: [
         "Tanda vital dalam batas normal",
         "Palpasi perikranial: nyeri tekan / ketegangan otot leher, tengkuk, dan perikranial",
@@ -164,10 +166,15 @@ const KNOWLEDGE_BASE_SAKIT_KEPALA = {
     },
     {
       id: "migren",
+      no: 5,
       name: "Migren",
       icd: "ICD-10 · G43.9 Migraine, unspecified",
-      jalur: "Tanpa demam",
-      kriteriaCodes: ['LOK02', 'KUA02', 'INT02', 'INT03', 'ONS03', 'FRE05', 'DUR03', 'PRE01', 'PRE02', 'PRE03', 'PRE04', 'PRE05', 'PRE07', 'KEL01', 'RPD04', 'RPD05', 'KEB05', 'PEN19', 'PEN11', 'PEN07', 'PEN12', 'PEN13'],
+      maxScore: 39,
+      weights: {
+        'LOK02': 3, 'KUA02': 3, 'PEN11': 3, 'PEN12': 3, 'PEN13': 3,
+        'INT02': 2, 'INT03': 2, 'ONS03': 2, 'FRE05': 2, 'DUR03': 2, 'PEN19': 2, 'PEN07': 2,
+        'PRE01': 1, 'PRE02': 1, 'PRE03': 1, 'PRE04': 1, 'PRE05': 1, 'PRE07': 1, 'KEL01': 1, 'RPD04': 1, 'RPD05': 1, 'KEB05': 1
+      },
       pxFisik: [
         "Evaluasi tanda vital dan status kesadaran umum",
         "Pemeriksaan nervus kranialis (menyingkirkan kelumpuhan saraf okulomotor)",
@@ -179,10 +186,15 @@ const KNOWLEDGE_BASE_SAKIT_KEPALA = {
     },
     {
       id: "hipertensi",
+      no: 42,
       name: "Hipertensi esensial",
       icd: "ICD-10 · I10 Essential (primary) hypertension",
-      jalur: "Tanpa demam",
-      kriteriaCodes: ['LOK05', 'PRE10', 'KEL02', 'RPD02', 'KEB04', 'KEB05', 'PEN19', 'PEN16', 'PEN26', 'PEN30', 'PEN29', 'PEN27'],
+      maxScore: 20,
+      weights: {
+        'PEN29': 3,
+        'LOK05': 2, 'PEN19': 2, 'PEN16': 2, 'PEN26': 2, 'PEN30': 2, 'PEN27': 2,
+        'PRE10': 1, 'KEL02': 1, 'RPD02': 1, 'KEB04': 1, 'KEB05': 1
+      },
       pxFisik: [
         "Pengukuran tekanan darah berkala (duduk tenang minimal 5 menit, konfirmasi kedua lengan)",
         "Auskultasi jantung (murmur/gallop) dan paru",
@@ -198,10 +210,15 @@ const KNOWLEDGE_BASE_SAKIT_KEPALA = {
     },
     {
       id: "vertigo",
+      no: 7,
       name: "Vertigo (BPPV / Vestibular)",
       icd: "ICD-10 · R42 Dizziness and giddiness",
-      jalur: "Tanpa demam",
-      kriteriaCodes: ['KUA04', 'KUA05', 'FRE05', 'DUR01', 'ONS05', 'PRE06', 'PRE08', 'RPD02', 'RPD06', 'RPD07', 'RPD08', 'PEN25', 'PEN28', 'PEN07'],
+      maxScore: 27,
+      weights: {
+        'KUA04': 3, 'KUA05': 3, 'DUR01': 3, 'ONS05': 3,
+        'FRE05': 2, 'PRE08': 2, 'PEN25': 2, 'PEN28': 2, 'PEN07': 2,
+        'PRE06': 1, 'RPD02': 1, 'RPD06': 1, 'RPD07': 1, 'RPD08': 1
+      },
       pxFisik: [
         "Uji nistagmus posisi: Manuver Dix-Hallpike",
         "Uji fungsi serebelar dan koordinasi: Tes Romberg, Romberg dipertajam, tandem gait, past pointing",
@@ -213,10 +230,15 @@ const KNOWLEDGE_BASE_SAKIT_KEPALA = {
     },
     {
       id: "hipermetropia",
+      no: 18,
       name: "Hipermetropia",
       icd: "ICD-10 · H52.0 Hypermetropia",
-      jalur: "Tanpa demam",
-      kriteriaCodes: ['LOK03', 'KUA03', 'ONS04', 'PRE11', 'RPD06', 'PEN11', 'PEN14', 'PEN17'],
+      maxScore: 17,
+      weights: {
+        'KUA03': 3, 'PEN14': 3,
+        'LOK03': 2, 'ONS04': 2, 'PRE11': 2, 'PEN11': 2, 'PEN17': 2,
+        'RPD06': 1
+      },
       pxFisik: [
         "Pemeriksaan visus jauh dan dekat dengan kartu Snellen / Jaeger",
         "Pemeriksaan segmen anterior bola mata dengan senter loupe"
@@ -227,10 +249,15 @@ const KNOWLEDGE_BASE_SAKIT_KEPALA = {
     },
     {
       id: "miopia",
+      no: 19,
       name: "Miopia",
       icd: "ICD-10 · H52.1 Myopia",
-      jalur: "Tanpa demam",
-      kriteriaCodes: ['KUA03', 'ONS04', 'PRE11', 'KEL03', 'PEN15', 'PEN17', 'PEN18'],
+      maxScore: 15,
+      weights: {
+        'KUA03': 3, 'PEN15': 3,
+        'ONS04': 2, 'PRE11': 2, 'PEN17': 2, 'PEN18': 2,
+        'KEL03': 1
+      },
       pxFisik: [
         "Pemeriksaan tajam penglihatan (visus) monokular dan binokular kartu Snellen",
         "Uji pinhole: visus membaik mengonfirmasi kelainan refraksi"
@@ -241,10 +268,14 @@ const KNOWLEDGE_BASE_SAKIT_KEPALA = {
     },
     {
       id: "astigmatisme",
+      no: 20,
       name: "Astigmatisme",
       icd: "ICD-10 · H52.2 Astigmatism",
-      jalur: "Tanpa demam",
-      kriteriaCodes: ['KUA03', 'ONS04', 'PRE11', 'PEN16', 'PEN18'],
+      maxScore: 12,
+      weights: {
+        'KUA03': 3, 'PEN16': 3,
+        'ONS04': 2, 'PRE11': 2, 'PEN18': 2
+      },
       pxFisik: [
         "Pemeriksaan visus kartu Snellen",
         "Tes uji jam astigmatisme (astigmatic dial test)"
@@ -255,67 +286,90 @@ const KNOWLEDGE_BASE_SAKIT_KEPALA = {
     },
     {
       id: "presbiopia",
+      no: 21,
       name: "Presbiopia",
       icd: "ICD-10 · H52.4 Presbyopia",
-      jalur: "Tanpa demam",
-      kriteriaCodes: ['KUA03', 'ONS04', 'PRE11', 'PEN14', 'PEN17'],
+      maxScore: 12,
+      weights: {
+        'KUA03': 3, 'PEN14': 3,
+        'ONS04': 2, 'PRE11': 2, 'PEN17': 2
+      },
       pxFisik: [
         "Uji tajam penglihatan dekat menggunakan kartu Jaeger pada jarak baca 33-40 cm",
         "Pemeriksaan refraksi jauh dasar"
       ],
       pxPenunjang: [
-        "Koreksi adisi lensa sferis positif (+) sesuai kelompok usia (misal +1.00D s/d +3.00D)"
+        "Koreksi adisi lensa sferis positif (+) sesuai kelompok usia"
       ]
     },
     {
       id: "hipoglikemi",
+      no: 83,
       name: "Hipoglikemi ringan",
       icd: "ICD-10 · E16.2 Hypoglycaemia, unspecified",
-      jalur: "Tanpa demam",
-      kriteriaCodes: ['KUA06', 'PRE02', 'PRE09', 'RPD01', 'KEB01', 'KEB03', 'PEN24', 'PEN25', 'PEN26', 'PEN23', 'PEN27'],
+      maxScore: 22,
+      weights: {
+        'PEN24': 3, 'PEN25': 3, 'PEN23': 3,
+        'KUA06': 2, 'PRE02': 2, 'RPD01': 2, 'PEN26': 2, 'PEN27': 2,
+        'PRE09': 1, 'KEB01': 1, 'KEB03': 1
+      },
       pxFisik: [
         "Tanda vital: evaluasi takikardia, diaphoresis (keringat dingin yang nyata)",
         "Pemeriksaan kesadaran dan tremor postural pada ekstremitas atas"
       ],
       pxPenunjang: [
-        "Pemeriksaan glukosa darah sewaktu (GDS) menggunakan glukometer cito (&lt; 70 mg/dL)"
+        "Pemeriksaan glukosa darah sewaktu (GDS) menggunakan glukometer cito (< 70 mg/dL)"
       ]
     },
     {
       id: "anemia",
+      no: 90,
       name: "Anemia defisiensi besi",
       icd: "ICD-10 · D50 Iron deficiency anaemia",
-      jalur: "Tanpa demam",
-      kriteriaCodes: ['KUA06', 'RPD03', 'RPD04', 'KEB01', 'PEN19', 'PEN22', 'PEN28', 'PEN20', 'PEN21'],
+      maxScore: 16,
+      weights: {
+        'PEN20': 3,
+        'KUA06': 2, 'PEN19': 2, 'PEN22': 2, 'PEN28': 2, 'PEN21': 2,
+        'RPD03': 1, 'RPD04': 1, 'KEB01': 1
+      },
       pxFisik: [
-        "Inspeksi konjungtiva anemis, telapak tangan pucat, atrofi papil lidah, koilonikia (kuku sendok)",
+        "Inspeksi konjungtiva anemis, telapak tangan pucat, atrofi papil lidah, koilonikia",
         "Auskultasi murmur sistolik fungsional / takikardia kompensatorik"
       ],
       pxPenunjang: [
-        "Darah perifer lengkap (Hemoglobin, Hematokrit, Indeks eritrosit: MCV, MCH, MCHC rendah/mikrositik hipokromik)",
-        "Pemeriksaan apusan darah tepi (bila tersedia di FKTP)"
+        "Darah perifer lengkap (Hemoglobin, Hematokrit, Indeks eritrosit MCV/MCH/MCHC rendah)"
       ]
     },
     {
       id: "insomnia",
+      no: 9,
       name: "Insomnia",
       icd: "ICD-10 · F51 Nonorganic sleep disorders",
-      jalur: "Tanpa demam",
-      kriteriaCodes: ['PRE04', 'RPD09', 'KEB02', 'KEB05'],
+      maxScore: 7,
+      weights: {
+        'KEB02': 3,
+        'PRE04': 2,
+        'RPD09': 1, 'KEB05': 1
+      },
       pxFisik: [
-        "Status mental dan penampilan umum (tanda kelelahan kronis, lingkaran hitam bawah mata)",
-        "Pemeriksaan fisik umum menyingkirkan etiologi organik/gangguan pernapasan obstruktif tidur"
+        "Status mental dan penampilan umum (tanda kelelahan kronis)",
+        "Pemeriksaan fisik umum menyingkirkan kelainan organik"
       ],
       pxPenunjang: [
-        "Pengisian kuesioner skala tidur (misal Pittsburgh Sleep Quality Index / PSQI)"
+        "Pengisian kuesioner skala kualitas tidur (PSQI)"
       ]
     },
     {
       id: "somatoform",
+      no: 8,
       name: "Gangguan somatoform",
       icd: "ICD-10 · F45 Somatoform disorders",
-      jalur: "Tanpa demam",
-      kriteriaCodes: ['FRE05', 'PRE06', 'RPD09'],
+      maxScore: 5,
+      isExclusion: true, // Diagnosis eksklusi sesuai Catatan Excel
+      weights: {
+        'FRE05': 2, 'RPD09': 2,
+        'PRE06': 1
+      },
       pxFisik: [
         "Pemeriksaan fisik menyeluruh terfokus pada organ yang dikeluhkan (seluruh temuan dalam batas normal)",
         "Eksplorasi status psikologis dan stresor kehidupan"
@@ -326,15 +380,20 @@ const KNOWLEDGE_BASE_SAKIT_KEPALA = {
     },
     {
       id: "influenza",
+      no: 33,
       name: "Influenza",
       icd: "ICD-10 · J11 Influenza, virus not identified",
-      jalur: "Dengan demam",
-      kriteriaCodes: ['ONS01', 'KEL04', 'PEN01', 'PEN19', 'PEN03', 'PEN04', 'PEN05', 'PEN06', 'PEN02'],
+      maxScore: 21,
+      requiredCode: "PEN01", // Syarat wajib demam sesuai Excel
+      weights: {
+        'PEN03': 3, 'PEN04': 3, 'PEN05': 3, 'PEN06': 3,
+        'ONS01': 2, 'PEN01': 2, 'PEN19': 2, 'PEN02': 2,
+        'KEL04': 1
+      },
       pxFisik: [
-        "Tanda vital: Suhu febris (&gt; 37.8°C)",
+        "Tanda vital: Suhu febris (> 37.8°C)",
         "Rinoskopi anterior: Mukosa konka hiperemis, sekret serosa/mukoid",
-        "Faringoskopi: Faring hiperemis ringan tanpa eksudat pseudomembran",
-        "Auskultasi paru: Vesikuler normal bilateral tanpa suara napas tambahan"
+        "Faringoskopi: Faring hiperemis ringan tanpa eksudat pseudomembran"
       ],
       pxPenunjang: [
         "Darah perifer lengkap jika diperlukan (leukosit normal atau leukopenia relatif)"
@@ -342,35 +401,47 @@ const KNOWLEDGE_BASE_SAKIT_KEPALA = {
     },
     {
       id: "dengue",
+      no: 92,
       name: "Demam dengue / DHF",
       icd: "ICD-10 · A90 / A91 Dengue fever",
-      jalur: "Dengan demam",
-      kriteriaCodes: ['LOK07', 'INT03', 'ONS01', 'FRE04', 'DUR04', 'KEL04', 'KEB06', 'PEN01', 'PEN03', 'PEN05', 'PEN06', 'PEN07', 'PEN08', 'PEN31', 'PEN02'],
+      maxScore: 30,
+      requiredCode: "PEN01", // Syarat wajib demam sesuai Excel
+      weights: {
+        'LOK07': 3, 'PEN31': 3,
+        'INT03': 2, 'ONS01': 2, 'FRE04': 2, 'DUR04': 2, 'PEN01': 2, 'PEN03': 2, 'PEN05': 2, 'PEN06': 2, 'PEN07': 2, 'PEN08': 2, 'PEN02': 2,
+        'KEL04': 1, 'KEB06': 1
+      },
       pxFisik: [
         "Tanda vital: Suhu febris tinggi mendadak, evaluasi tekanan nadi dan tanda presyok",
-        "Uji bendung / Rumple-Leede test (positif bila ≥ 10 petekie per 1 inci persegi)",
-        "Inspeksi ruam petekie pada ekstremitas atau perdarahan spontan (epistaksis/perdarahan gusi)",
-        "Palpasi abdomen: pembesaran hati (hepatomegali) dan nyeri tekan kuadran kanan atas"
+        "Uji bendung / Rumple-Leede test (positif bila ≥ 10 petekie)",
+        "Inspeksi ruam petekie pada ekstremitas atau perdarahan spontan",
+        "Palpasi abdomen: pembesaran hati (hepatomegali)"
       ],
       pxPenunjang: [
-        "Darah perifer lengkap serial: Trombositopenia (&lt; 100.000/µL), hemokonsentrasi (peningkatan hematokrit ≥ 20%), leukopenia",
-        "Tes serologi cepat: NS1 antigen (hari 1-3) atau IgM/IgG anti-dengue"
+        "Darah perifer lengkap serial (Trombositopenia < 100.000/µL, hemokonsentrasi hematokrit ≥ 20%)",
+        "Tes serologi cepat: NS1 antigen atau IgM/IgG anti-dengue"
       ]
     },
     {
       id: "tifoid",
+      no: 50,
       name: "Demam tifoid",
       icd: "ICD-10 · A01.0 Typhoid fever",
-      jalur: "Dengan demam",
-      kriteriaCodes: ['LOK03', 'DUR05', 'KEL04', 'KEB02', 'KEB07', 'PEN01', 'PEN03', 'PEN07', 'PEN08', 'PEN09', 'PEN10', 'PEN32', 'PEN02'],
+      maxScore: 25,
+      requiredCode: "PEN01", // Syarat wajib demam sesuai Excel
+      weights: {
+        'DUR05': 3, 'PEN08': 3,
+        'LOK03': 2, 'PEN01': 2, 'PEN03': 2, 'PEN07': 2, 'PEN09': 2, 'PEN10': 2, 'PEN32': 2, 'PEN02': 2,
+        'KEL04': 1, 'KEB02': 1, 'KEB07': 1
+      },
       pxFisik: [
-        "Tanda vital: Suhu febris bertingkat (*step-ladder*) terutama sore/malam hari, bradikardia relatif",
-        "Pemeriksaan mulut: *Coated tongue* / tifoid lidah (kotor di tengah, tepi hiperemis, tremor)",
-        "Pemeriksaan abdomen: Distensi meteorismus, nyeri tekan abdomen, splenomegali/hepatomegali"
+        "Tanda vital: Suhu febris bertingkat (step-ladder), bradikardia relatif",
+        "Pemeriksaan mulut: Coated tongue / lidah kotor di tengah tepi hiperemis",
+        "Pemeriksaan abdomen: Distensi meteorismus, nyeri tekan abdomen, hepatomegali"
       ],
       pxPenunjang: [
         "Tes serologi TUBEX TF atau Widal",
-        "Darah perifer lengkap (leukopenia relatif, aneosinofilia, limfositosis relatif)"
+        "Darah perifer lengkap (leukopenia relatif, aneosinofilia)"
       ]
     }
   ]
