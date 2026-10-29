@@ -568,3 +568,49 @@ tbody tr:last-child td{border-bottom:0}
   body{background:#fff}
   .card{box-shadow:none}
 }
+
+/* ---------- Red Flag Warning Page ---------- */
+.danger-box {
+  max-width: 680px;
+  margin: 3rem auto;
+  background: #fff;
+  border-radius: var(--radius);
+  border: 2px solid var(--danger);
+  box-shadow: 0 10px 25px rgba(185, 28, 28, 0.15);
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+.danger-icon {
+  width: 72px;
+  height: 72px;
+  background: var(--danger-bg);
+  color: var(--danger);
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  margin-bottom: 1.25rem;
+}
+.danger-title {
+  color: var(--danger);
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+}
+.danger-desc {
+  font-size: 1rem;
+  color: var(--ink-2);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+.action-call {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+@media(min-width: 540px) {
+  .action-call {
+    flex-direction: row;
+    justify-content: center;
+  }
+}

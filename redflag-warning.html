@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Peringatan Medis Darurat — AnamneSelf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<div class="app" style="display:block; min-height:100vh; background:var(--bg);">
+  <main class="content" style="max-width:800px; margin:0 auto; padding-top:2rem;">
+    <div class="danger-box">
+      <div class="danger-icon">
+        <svg class="ic ic-lg" style="width:36px; height:36px;"><use href="#i-alert"/></svg>
+      </div>
+      <h1 class="danger-title">Perhatian: Diperlukan Penanganan Segera!</h1>
+      <p class="danger-desc">
+        Berdasarkan tanda bahaya yang Anda pilih (riwayat benturan kepala atau gejala neurologis akut), kondisi Anda <b>tidak dianjurkan untuk konsultasi rawat jalan biasa</b> dan memerlukan pemeriksaan medis darurat untuk mencegah komplikasi berbahaya.
+      </p>
+
+      <div class="alert alert-danger" style="text-align:left; margin-bottom:1.5rem;">
+        <svg class="ic"><use href="#i-alert"/></svg>
+        <p class="small">
+          <b>Segera tuju IGD Rumah Sakit terdekat</b> atau hubungi layanan ambulans gawat darurat (119 / 118). Jangan mengemudikan kendaraan sendiri; mintalah pendampingan keluarga.
+        </p>
+      </div>
+
+      <div class="action-call">
+        <a href="tel:119" class="btn btn-primary btn-lg" style="background:var(--danger); border-color:var(--danger);">
+          <svg class="ic"><use href="#i-phone"/></svg> Hubungi Ambulans (119)
+        </a>
+        <a href="pasien-dashboard.html" class="btn btn-outline btn-lg">
+          Kembali ke Beranda
+        </a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
