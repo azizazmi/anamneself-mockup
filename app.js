@@ -86,7 +86,6 @@
     var bars = Array.prototype.slice.call(wiz.querySelectorAll('.stepper .s'));
     var meta = document.getElementById('step-meta');
     
-    // Judul Langkah yang sudah disinkronkan dengan 7 step baru
     var titles = [
       'Keluhan Utama & Screening Red Flag',
       'Karakteristik Sakit Kepala',
@@ -123,24 +122,20 @@
       var groupName = target.name;
       var code = target.getAttribute('data-code');
 
-      // 1. Logika untuk opsi "Tidak ada" / "NONE" / "PRE12"
       if (code === 'NONE' || code === 'PRE12') {
         if (target.checked) {
-          // Uncheck opsi lain di grup ini
           var others = wiz.querySelectorAll('input[name="' + groupName + '"]');
           others.forEach(function (el) {
             if (el !== target) el.checked = false;
           });
         }
       } else {
-        // Jika opsi biasa dicentang, uncheck opsi "NONE" / "PRE12"
         if (target.checked) {
           var noneEl = wiz.querySelector('input[name="' + groupName + '"][data-code="NONE"], input[name="' + groupName + '"][data-code="PRE12"]');
           if (noneEl) noneEl.checked = false;
         }
       }
 
-      // 2. Logika khusus KEB03 (Aktivitas berlebihan) vs KEB04 (Aktivitas kurang)
       if (code === 'KEB03' && target.checked) {
         var keb04 = wiz.querySelector('input[name="kebiasaan"][data-code="KEB04"]');
         if (keb04) keb04.checked = false;
@@ -151,12 +146,10 @@
     });
 
     function kumpulkanDataPasien() {
-      // 1. Keluhan Utama & Red Flag
       var ku = getRadioData('keluhan_utama', 'Sakit kepala', 'KU01');
       var cedera = getRadioData('cedera_kepala', 'Tidak', 'NONE');
       var redFlag = getCheckedDataArray('red_flag');
 
-      // 2. RPS
       var lokasi = getCheckedDataArray('lokasi');
       var sensasi = getCheckedDataArray('sensasi');
       var intensitas = getRadioData('intensitas', 'Sedang', 'INT02');
@@ -164,20 +157,12 @@
       var frekuensi = getRadioData('frekuensi', 'Kadang-kadang, kurang dari 15 hari per bulan', 'FRE02');
       var durasi = getRadioData('durasi', '4 sampai 72 jam', 'DUR03');
 
-      // 3. Pemicu
       var pemicu = getCheckedDataArray('pemicu');
-
-      // 4. Keluhan Penyerta
       var penyerta = getCheckedDataArray('penyerta');
-
-      // 5. RPD & RPK
       var rpd = getCheckedDataArray('rpd');
       var rpk = getCheckedDataArray('rpk');
-
-      // 6. Gaya Hidup (RPSOS)
       var kebiasaan = getCheckedDataArray('kebiasaan');
 
-      // Gabungkan semua kode gejala yang aktif
       var allCodes = [].concat(
         cedera.code !== 'NONE' ? [cedera.code] : [],
         redFlag.codes,
@@ -194,13 +179,11 @@
         kebiasaan.codes
       );
 
-      // Evaluasi otomatis RF03: Leher kaku (PEN29) + Demam (PEN01)
       var isRF03 = penyerta.codes.indexOf('PEN01') !== -1 && penyerta.codes.indexOf('PEN29') !== -1;
       if (isRF03 && allCodes.indexOf('RF03') === -1) {
         allCodes.push('RF03');
       }
 
-      // Evaluasi flag kegawatan umum
       var isTraumaGate = cedera.code === 'ONS06';
       var isRedFlagEmergency = redFlag.codes.length > 0 || intensitas.code === 'INT04' || isRF03;
 
@@ -219,7 +202,6 @@
         penyakitDahulu: rpd.texts.length ? rpd.texts.join(', ') : 'Tidak ada riwayat',
         riwayatKeluarga: rpk.texts.length ? rpk.texts.join(', ') : 'Tidak ada',
         kebiasaan: kebiasaan.texts.length ? kebiasaan.texts.join(', ') : 'Tidak ada',
-        // Data teknis untuk mesin inferensi
         codes: allCodes,
         isTraumaGate: isTraumaGate,
         isRedFlagEmergency: isRedFlagEmergency
@@ -268,7 +250,6 @@
     if (rawDash) {
       var dDash = JSON.parse(rawDash);
       
-      // Update Ringkasan Keluhan Pasien
       var elKeluhan = document.getElementById('dash-keluhan');
       if (elKeluhan) {
         var ringkas = dDash.keluhanUtama || 'Sakit kepala';
@@ -283,7 +264,6 @@
         elOrgan.textContent = 'Sistem Saraf';
       }
 
-      // Update Status Red Flag / Prioritas Rujukan
       var elPrioritas = document.getElementById('dash-prioritas');
       if (elPrioritas) {
         elPrioritas.innerHTML = (dDash.isRedFlagEmergency || dDash.isTraumaGate)
@@ -353,21 +333,86 @@
       sosial.innerHTML = '<dt>Kebiasaan & gaya hidup</dt><dd>' + d.kebiasaan + '</dd>';
     }
 
-    // Evaluasi CDSS Alert
-    var cdssAlert = document.getElementById('res-cds-alert');
-    if (cdssAlert) {
-      if (d.isRedFlagEmergency || d.isTraumaGate) {
-        cdssAlert.style.borderColor = 'var(--danger-line)';
+    // Evaluasi CDSS Alert & Rekomendasi Diagnosis Banding
+    if (typeof KNOWLEDGE_BASE_SAKIT_KEPALA !== 'undefined') {
+      var rf = KNOWLEDGE_BASE_SAKIT_KEPALA.evaluasiRedFlag(d);
+      var cdssAlert = document.getElementById('res-cds-alert');
+      var headBadge = document.getElementById('head-triase-badge');
+
+      if (headBadge) {
+        headBadge.className = 'badge ' + (rf.isRedFlag ? 'badge-danger' : 'badge-neutral');
+        headBadge.innerHTML = '<svg class="ic ic-sm"><use href="' + (rf.isRedFlag ? '#i-alert' : '#i-shield') + '"/></svg>' + rf.badge;
+      }
+
+      if (cdssAlert) {
+        cdssAlert.style.borderColor = rf.isRedFlag ? 'var(--danger-line)' : 'var(--teal)';
         cdssAlert.innerHTML = 
-          '<div class="sec-title" style="color:var(--danger)">' +
-          '<svg class="ic ic-sm"><use href="#i-alert"/></svg>Peringatan: Potensi Kegawatan / Red Flag Terdeteksi</div>' +
-          '<p class="small">Ditemukan indikasi tanda bahaya (red flag / trauma kepala). Pasien dianjurkan untuk segera dievaluasi prioritas dan dipertimbangkan rujukan lanjutan.</p>';
-      } else {
-        cdssAlert.style.borderColor = 'var(--teal)';
-        cdssAlert.innerHTML = 
-          '<div class="sec-title" style="color:var(--teal)">' +
-          '<svg class="ic ic-sm"><use href="#i-shield"/></svg>Aman untuk Evaluasi Rawat Jalan Rutin</div>' +
-          '<p class="small">Tidak terdeteksi tanda bahaya mayor (red flag) pada tahap screening awal.</p>';
+          '<div class="sec-title" style="color:' + (rf.isRedFlag ? 'var(--danger)' : 'var(--teal)') + '">' +
+          '<svg class="ic ic-sm"><use href="' + (rf.isRedFlag ? '#i-alert' : '#i-shield') + '"/></svg>' + rf.title + '</div>' +
+          '<p class="small">' + rf.desc + '</p>';
+      }
+
+      var dxContainer = document.getElementById('res-cds-dx-list');
+      if (dxContainer) {
+        var dxList = KNOWLEDGE_BASE_SAKIT_KEPALA.daftarDiagnosis;
+        var activeCodes = d.codes || [];
+
+        // Hitung kecocokan tiap diagnosis berdasarkan kriteria kode matriks
+        var evaluatedDx = dxList.map(function (item) {
+          var matched = 0;
+          item.kriteriaCodes.forEach(function (c) {
+            if (activeCodes.indexOf(c) !== -1) matched++;
+          });
+          var pct = item.kriteriaCodes.length > 0 ? Math.round((matched / item.kriteriaCodes.length) * 100) : 0;
+          return {
+            name: item.name,
+            icd: item.icd,
+            matched: matched,
+            total: item.kriteriaCodes.length,
+            percent: pct,
+            pxFisik: item.pxFisik,
+            pxPenunjang: item.pxPenunjang
+          };
+        }).sort(function (a, b) {
+          return b.matched !== a.matched ? (b.matched - a.matched) : (b.percent - a.percent);
+        });
+
+        // Ambil diagnosis yang memiliki kecocokan minimal 1 kriteria (atau top 3 fallback)
+        var topDxList = evaluatedDx.filter(function (x) { return x.matched > 0; });
+        if (topDxList.length === 0) topDxList = evaluatedDx.slice(0, 3);
+
+        dxContainer.innerHTML = topDxList.map(function (item, idx) {
+          var isTop = idx === 0;
+          var badgeClass = item.percent >= 40 ? 'badge-info' : 'badge-warn';
+          var barClass = item.percent >= 40 ? '' : 'warn';
+
+          return (
+            '<div class="dx ' + (isTop ? 'sel' : '') + '" data-idx="' + idx + '">' +
+              '<div class="dx-top">' +
+                '<div><div class="dx-name">' + item.name + '</div><div class="dx-code">' + item.icd + '</div></div>' +
+                '<span class="badge ' + badgeClass + '">' + item.matched + ' / ' + item.total + ' kriteria (' + item.percent + '%)</span>' +
+              '</div>' +
+              '<div class="bar ' + barClass + '"><i style="width:' + item.percent + '%"></i></div>' +
+              '<label class="pick"><input type="checkbox" ' + (isTop ? 'checked' : '') + '>Pilih sebagai diagnosis kerja</label>' +
+            '</div>'
+          );
+        }).join('');
+
+        // Tampilkan rekomendasi pemeriksaan untuk diagnosis teratas
+        var topDx = topDxList[0];
+        var pxFisikUl = document.getElementById('res-px-fisik');
+        if (pxFisikUl && topDx && topDx.pxFisik) {
+          pxFisikUl.innerHTML = topDx.pxFisik.map(function (pf) {
+            return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pf + '</li>';
+          }).join('');
+        }
+
+        var pxPenunjangUl = document.getElementById('res-px-penunjang');
+        if (pxPenunjangUl && topDx && topDx.pxPenunjang) {
+          pxPenunjangUl.innerHTML = topDx.pxPenunjang.map(function (pp) {
+            return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pp + '</li>';
+          }).join('');
+        }
       }
     }
   }
