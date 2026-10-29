@@ -291,7 +291,7 @@ tbody tr:last-child td{border-bottom:0}
 .checklist li{display:flex;gap:.6rem;align-items:flex-start;font-size:.9rem}
 .checklist .ic{color:var(--primary);margin-top:2px}
 .rule-note{font-size:.78rem;color:var(--muted);display:flex;gap:.4rem;align-items:flex-start;margin-top:.75rem}
-.sticky-side{position:sticky;top:84px;align-self:start}
+.sticky-side{position:sticky;top:5rem;align-self:start}
 
 /* ---------- Login ---------- */
 .auth{min-height:100vh;display:grid;grid-template-columns:1.05fr 1fr}
