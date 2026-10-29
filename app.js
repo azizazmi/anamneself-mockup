@@ -55,24 +55,17 @@
     });
   }
 
-  // ---------- 3. Helper Pengambilan Data Form Akurat ----------
-  function getRadioText(containerOrName) {
-    var el = null;
-    if (containerOrName.indexOf('input') !== -1 || containerOrName.indexOf('.') !== -1 || containerOrName.indexOf('#') !== -1) {
-      el = document.querySelector(containerOrName + ' input:checked');
-    } else {
-      el = document.querySelector('input[name="' + containerOrName + '"]:checked');
-    }
-    if (!el) return 'Tidak';
+  // ---------- 3. Helper Pembaca Input Form ----------
+  function getRadioByName(name, def) {
+    var el = document.querySelector('input[name="' + name + '"]:checked');
+    if (!el) return def || 'Tidak';
     var lbl = el.closest('label');
     return lbl ? lbl.textContent.replace('✓', '').trim() : el.value;
   }
 
-  function getSelectedChips(containerSelector) {
-    var c = document.querySelector(containerSelector);
-    if (!c) return [];
-    var checked = c.querySelectorAll('input:checked');
-    return Array.prototype.map.call(checked, function (el) {
+  function getCheckedArrayByName(name) {
+    var els = document.querySelectorAll('input[name="' + name + '"]:checked');
+    return Array.prototype.map.call(els, function (el) {
       var lbl = el.closest('label');
       return lbl ? lbl.textContent.replace('✓', '').trim() : el.value;
     });
@@ -86,11 +79,11 @@
     var meta = document.getElementById('step-meta');
     var titles = [
       'Keluhan Utama & Lain',
-      'Riwayat Penyakit Sekarang',
+      'Karakteristik Sakit Kepala',
       'Riwayat Penyakit Dahulu',
       'Riwayat Penyakit Keluarga',
-      'Riwayat Sosial & Kebiasaan',
-      'Alergi & Obat',
+      'Riwayat Sosial & Gaya Hidup',
+      'Alergi & Obat-obatan',
       'Tinjau & Kirim'
     ];
     var cur = 0;
@@ -118,79 +111,59 @@
     }
 
     function kumpulkanDataPasien() {
-      // 1. Keluhan Utama & Keluhan Lain (Poin 1 Fix)
-      var kuChecked = document.querySelectorAll('.step[data-step="1"] .q:first-of-type input:checked');
-      var ku = kuChecked.length ? kuChecked[0].closest('label').textContent.replace('✓', '').trim() : 'Sakit kepala';
+      // 1. Keluhan Utama & Keluhan Lain
+      var ku = getRadioByName('keluhan_utama', 'Sakit kepala');
+      var kl = getCheckedArrayByName('gejala_lain');
 
-      // Ambil keluhan lain HANYA dari container keluhan lain
-      var klChecked = document.querySelectorAll('.step[data-step="1"] .q:nth-of-type(2) input:checked');
-      var kl = Array.prototype.map.call(klChecked, function(el) {
-        return el.closest('label').textContent.replace('✓', '').trim();
-      }).filter(function(item) {
-        return item.toLowerCase() !== ku.toLowerCase(); // Hindari duplikasi jika sama dengan keluhan utama
-      });
-
-      // 2. RPS (Sacred Seven) (Poin 2 & 3 Fix)
-      var txtsStep2 = document.querySelectorAll('.step[data-step="2"] textarea');
-      var numInputsStep2 = document.querySelectorAll('.step[data-step="2"] input[type="number"]');
-      var selectsStep2 = document.querySelectorAll('.step[data-step="2"] select');
-
-      var lokasi = (txtsStep2[0] && txtsStep2[0].value.trim()) ? txtsStep2[0].value.trim() : 'Leher bagian belakang';
-      var sensasi = (txtsStep2[1] && txtsStep2[1].value.trim()) ? txtsStep2[1].value.trim() : 'Kepala terasa kencang dan berat';
+      // 2. RPS (Sacred Seven)
+      var lokasi = getRadioByName('lokasi', 'Leher belakang & tengkuk');
+      var sensasi = getRadioByName('sensasi', 'Terasa kencang / berat seperti diikat');
       var keparahan = pain ? pain.value : '5';
       
-      var durasiVal = (numInputsStep2[0] && numInputsStep2[0].value) ? numInputsStep2[0].value : '4';
-      var durasiSat = (selectsStep2[0] && selectsStep2[0].value) ? selectsStep2[0].value : 'hari';
-      var durasi = durasiVal + ' ' + durasiSat;
+      var durasiVal = document.getElementById('durasi') ? document.getElementById('durasi').value : '3';
+      var durasiSat = document.getElementById('satuan') ? document.getElementById('satuan').value : 'hari';
+      var durasi = (durasiVal || '3') + ' ' + durasiSat;
 
-      var frekVal = (numInputsStep2[1] && numInputsStep2[1].value) ? numInputsStep2[1].value : '3';
-      var frekuensi = frekVal + ' kali/hari';
+      var frekVal = document.getElementById('frekuensi') ? document.getElementById('frekuensi').value : '2';
+      var frekSat = document.getElementById('satuan-frekuensi') ? document.getElementById('satuan-frekuensi').value : 'kali/hari';
+      var frekuensi = (frekSat.indexOf('terus') !== -1) ? 'Terus-menerus sepanjang hari' : ((frekVal || '2') + ' kali/hari');
 
-      // Durasi serangan dengan satuan dinamis
-      var durSerangVal = (numInputsStep2[2] && numInputsStep2[2].value) ? numInputsStep2[2].value : '45';
-      var durSerangSat = (selectsStep2[1] && selectsStep2[1].value) ? selectsStep2[1].value : 'menit';
-      var durasiSerangan = durSerangVal + ' ' + durSerangSat;
+      var durasiSerangan = getRadioByName('durasi_serangan', '30 menit - 4 jam');
 
-      // Evaluasi Faktor Pencetus (Poin 2)
-      var radioPemicu = document.querySelector('.step[data-step="2"] .q:last-of-type input:checked');
-      var teksRadioPemicu = radioPemicu ? radioPemicu.closest('label').textContent.replace('✓', '').trim() : 'Tidak';
-      var inputTeksPemicu = (txtsStep2[2] && txtsStep2[2].value.trim()) ? txtsStep2[2].value.trim() : '';
-      var faktorPemicu = 'Tidak';
-      if (teksRadioPemicu.toLowerCase().indexOf('ya') !== -1) {
-        faktorPemicu = inputTeksPemicu ? ('Ya · ' + inputTeksPemicu) : 'Ya';
-      }
+      var pemicuList = getCheckedArrayByName('pemicu');
+      var faktorPemicu = pemicuList.length ? pemicuList.join(', ') : 'Tidak ada faktor pemicu khusus';
 
       // 3. RPD
-      var riwSerupa = getRadioText('.step[data-step="3"] .q:nth-of-type(1)');
-      var kontakTb = getRadioText('.step[data-step="3"] .q:nth-of-type(2)');
-      var keturunanDiri = getSelectedChips('.step[data-step="3"] .q:nth-of-type(3)').join(', ') || 'Tidak ada';
-      var operasi = getRadioText('.step[data-step="3"] .q:nth-of-type(4)');
-      var cedera = getRadioText('.step[data-step="3"] .q:nth-of-type(5)');
+      var riwSerupa = getRadioByName('keluhan_lalu', 'Ya');
+      var cedera = getRadioByName('cedera', 'Tidak');
+      var rpdList = getCheckedArrayByName('rpd_list');
+      var penyakitDahulu = rpdList.length ? rpdList.join(', ') : 'Tidak ada';
+      var kontakTb = getRadioByName('kontaktb', 'Tidak');
+      var operasi = getRadioByName('operasi', 'Tidak');
 
       // 4. RPK
-      var rpkSerupa = getRadioText('.step[data-step="4"] .q:nth-of-type(1)');
-      var rpkKeturunan = getRadioText('.step[data-step="4"] .q:nth-of-type(2)');
-      var rpkMenular = getRadioText('.step[data-step="4"] .q:nth-of-type(3)');
+      var rpkSerupa = getRadioByName('rpk_serupa', 'Tidak');
+      var rpkHipertensi = getRadioByName('rpk_hipertensi', 'Ya');
+      var rpkMenular = getRadioByName('rpk_menular', 'Tidak');
 
-      // 5. Sosial & Kebiasaan
-      var txtsStep5 = document.querySelectorAll('.step[data-step="5"] textarea');
-      var makanan = (txtsStep5[0] && txtsStep5[0].value.trim()) ? txtsStep5[0].value.trim() : 'Nasi goreng';
-      var makanTeratur = getRadioText('.step[data-step="5"] .q:nth-of-type(4)');
-      var minumAir = getRadioText('.step[data-step="5"] .q:nth-of-type(5)');
-      var rokokStatus = getRadioText('.step[data-step="5"] .q:nth-of-type(7)');
-      var batangInput = document.querySelector('.step[data-step="5"] input[type="number"]');
-      var rokokFinal = rokokStatus.indexOf('Ya') !== -1 ? ('Ya · ± ' + (batangInput ? batangInput.value : '0') + ' batang/hari') : 'Tidak';
-      var alkohol = getRadioText('.step[data-step="5"] .q:nth-of-type(9)');
-      var narkoba = getRadioText('.step[data-step="5"] .q:nth-of-type(10)');
-      var bersih = getRadioText('.step[data-step="5"] .q:nth-of-type(11)');
+      var rpkGabungan = [];
+      if (rpkSerupa.indexOf('Ya') !== -1) rpkGabungan.push('Sakit kepala serupa/migren');
+      if (rpkHipertensi.indexOf('Ya') !== -1) rpkGabungan.push('Hipertensi/Stroke');
+      var teksRPK = rpkGabungan.length ? rpkGabungan.join(', ') : 'Tidak ada';
 
-      // 6. Alergi & Obat (Poin 4 Fix: Ambil spesifik per pertanyaan)
-      var alergi = getRadioText('.step[data-step="6"] .q:nth-of-type(1)');
-      var obat = getRadioText('.step[data-step="6"] .q:nth-of-type(2)');
-      
-      // Khusus kondisi khusus: hanya ambil dari q ketiga
-      var kondisiKhususChips = getSelectedChips('.step[data-step="6"] .q:nth-of-type(3)');
-      var kondisiKhusus = kondisiKhususChips.length ? kondisiKhususChips.join(', ') : 'Tidak ada';
+      // 5. Sosial & Gaya Hidup
+      var stres = getRadioByName('stres', 'Ya');
+      var tidur = getRadioByName('tidur', 'Kurang tidur / Insomnia');
+      var makan = getRadioByName('makan', 'Teratur');
+      var air = getRadioByName('air', 'Cukup (≥ 2 liter)');
+      var rokok = getRadioByName('rokok', 'Tidak');
+      var alkohol = getRadioByName('alkohol', 'Tidak');
+
+      // 6. Alergi & Obat
+      var alergi = getRadioByName('alergi', 'Tidak tahu');
+      var obat = getRadioByName('obat', 'Tidak');
+      var kondisiKhususList = getCheckedArrayByName('kondisi_khusus');
+      var kondisiKhusus = kondisiKhususList.length ? kondisiKhususList.join(', ') : 'Tidak ada';
 
       return {
         keluhanUtama: ku,
@@ -203,20 +176,19 @@
         durasiSerangan: durasiSerangan,
         faktorPemicu: faktorPemicu,
         riwayatSerupa: riwSerupa,
-        kontakTB: kontakTb,
-        penyakitKeturunan: keturunanDiri,
-        operasi: operasi,
         cedera: cedera,
+        penyakitDahulu: penyakitDahulu,
+        kontakTB: kontakTb,
+        operasi: operasi,
         keluargaKeluhanSerupa: rpkSerupa,
-        keluargaPenyakitKeturunan: rpkKeturunan,
+        keluargaPenyakitKeturunan: teksRPK,
         keluargaMenular: rpkMenular,
-        makananTerakhir: makanan,
-        makanTeratur: makanTeratur,
-        minumAir: minumAir,
-        merokok: rokokFinal,
+        stres: stres,
+        tidur: tidur,
+        makanTeratur: makan,
+        minumAir: air,
+        merokok: rokok,
         alkohol: alkohol,
-        obatTerlarang: narkoba,
-        kebersihan: bersih,
         alergiObat: alergi,
         obatDikonsumsi: obat,
         kondisiKhusus: kondisiKhusus
@@ -229,13 +201,18 @@
       var d = kumpulkanDataPasien();
       var rows = [
         ['Keluhan Utama', d.keluhanUtama],
-        ['Keluhan Lain', d.keluhanLain.length ? d.keluhanLain.join(', ') : 'Tidak ada'],
-        ['Lokasi', d.lokasi],
-        ['Tingkat Keparahan', d.keparahan + '/10'],
-        ['Durasi Serangan', d.durasiSerangan],
-        ['Faktor Pencetus', d.faktorPemicu],
-        ['Riwayat Cedera', d.cedera],
-        ['Kondisi Khusus', d.kondisiKhusus]
+        ['Gejala Penyerta', d.keluhanLain.length ? d.keluhanLain.join(', ') : 'Tidak ada'],
+        ['Lokasi Nyeri', d.lokasi],
+        ['Sensasi Nyeri', d.sensasi],
+        ['Skala Nyeri', d.keparahan + '/10'],
+        ['Lama Berlangsung', d.durasi],
+        ['Durasi Tiap Kambuh', d.durasiSerangan],
+        ['Faktor Pemicu', d.faktorPemicu],
+        ['Riwayat Cedera Kepala', d.cedera],
+        ['Riwayat Penyakit Dahulu', d.penyakitDahulu],
+        ['Riwayat Keluarga', d.keluargaPenyakitKeturunan],
+        ['Tingkat Stres / Tidur', 'Stres: ' + d.stres + ' · ' + d.tidur],
+        ['Alergi Obat', d.alergiObat]
       ];
       out.innerHTML = rows.map(function (r) {
         return '<div class="review-item"><b>' + r[0] + '</b><span>' + r[1].replace(/</g, '&lt;') + '</span></div>';
@@ -253,22 +230,22 @@
     show(0);
   }
 
-  // ---------- 5. SINKRONISASI DASHBOARD DOKTER (Poin 6 Fix) ----------
+  // ---------- 5. SINKRONISASI DASHBOARD DOKTER (dokter-dashboard.html) ----------
   if (window.location.pathname.indexOf('dokter-dashboard.html') !== -1) {
     var rawDash = localStorage.getItem('anamneself_data');
     if (rawDash) {
       var dDash = JSON.parse(rawDash);
       
-      // Update Keluhan Utama Pasien A tanpa duplikasi
+      // Update Keluhan Pasien A
       var elKeluhan = document.getElementById('dash-keluhan');
       if (elKeluhan) {
-        var teks = dDash.keluhanUtama || 'Sakit kepala';
+        var ringkas = dDash.keluhanUtama || 'Sakit kepala';
         if (dDash.keluhanLain && dDash.keluhanLain.length) {
-          teks += ', ' + dDash.keluhanLain.slice(0, 2).join(', ').toLowerCase();
+          ringkas += ', ' + dDash.keluhanLain.slice(0, 2).join(', ').toLowerCase();
         } else if (dDash.sensasi) {
-          teks += ', ' + dDash.sensasi.toLowerCase();
+          ringkas += ', ' + dDash.sensasi.toLowerCase();
         }
-        elKeluhan.textContent = teks;
+        elKeluhan.textContent = ringkas;
       }
 
       // Update Sistem Organ
@@ -277,58 +254,57 @@
         elOrgan.textContent = 'Sistem Syaraf';
       }
 
-      // Update Badge Prioritas
+      // Update Status Red Flag / Prioritas
       var elPrioritas = document.getElementById('dash-prioritas');
-      if (elPrioritas) {
-        var isRf = (dDash.cedera && dDash.cedera.toLowerCase().indexOf('ya') !== -1) || (parseInt(dDash.keparahan) >= 8);
-        elPrioritas.innerHTML = isRf
+      if (elPrioritas && typeof KNOWLEDGE_BASE_SAKIT_KEPALA !== 'undefined') {
+        var rfCheck = KNOWLEDGE_BASE_SAKIT_KEPALA.evaluasiRedFlag(dDash);
+        elPrioritas.innerHTML = rfCheck.isRedFlag
           ? '<span class="badge badge-danger">Red flag</span>'
           : '<span class="badge badge-neutral">Rutin</span>';
       }
     }
   }
 
-  // ---------- 6. SINKRONISASI RINGKASAN ANAMNESIS (Poin 5 Fix) ----------
+  // ---------- 6. SINKRONISASI RINGKASAN ANAMNESIS (ringkasan.html) ----------
   if (window.location.pathname.indexOf('ringkasan.html') !== -1) {
     var raw = localStorage.getItem('anamneself_data');
     var d = raw ? JSON.parse(raw) : {
       keluhanUtama: "Sakit kepala",
-      keluhanLain: [],
-      lokasi: "Leher belakang",
-      sensasi: "Kepala terasa kencang",
-      keparahan: "7",
-      durasi: "5 hari",
-      frekuensi: "3 kali/hari",
-      durasiSerangan: "1 menit",
-      faktorPemicu: "Tidak",
+      keluhanLain: ["Sensitif cahaya (silau)", "Leher tegang / kaku"],
+      lokasi: "Leher belakang & tengkuk",
+      sensasi: "Terasa kencang / berat seperti diikat",
+      keparahan: "5",
+      durasi: "3 hari",
+      frekuensi: "2 kali/hari",
+      durasiSerangan: "30 menit - 4 jam",
+      faktorPemicu: "Kurang tidur / kelelahan, Stres pikiran / beban kerja",
       riwayatSerupa: "Ya",
-      kontakTB: "Tidak",
-      penyakitKeturunan: "Ya",
-      operasi: "Tidak",
       cedera: "Tidak",
+      penyakitDahulu: "Tidak ada",
+      kontakTB: "Tidak",
+      operasi: "Tidak",
       keluargaKeluhanSerupa: "Tidak",
-      keluargaPenyakitKeturunan: "Ya",
+      keluargaPenyakitKeturunan: "Hipertensi/Stroke",
       keluargaMenular: "Tidak",
-      makananTerakhir: "Nasi goreng",
-      makanTeratur: "Ya",
-      minumAir: "Cukup",
+      stres: "Ya",
+      tidur: "Kurang tidur / Insomnia",
+      makanTeratur: "Teratur",
+      minumAir: "Cukup (≥ 2 liter)",
       merokok: "Tidak",
       alkohol: "Tidak",
-      obatTerlarang: "Tidak",
-      kebersihan: "Bersih",
       alergiObat: "Tidak tahu",
       obatDikonsumsi: "Tidak",
       kondisiKhusus: "Tidak ada"
     };
 
-    // 1. Render Keluhan Utama & Lain
+    // 1. Render Keluhan Utama & Keluhan Lain
     var ku = document.getElementById('dt-keluhan-utama');
     var kl = document.getElementById('dt-keluhan-lain');
     if (ku) ku.innerHTML = '<span class="badge badge-danger">' + d.keluhanUtama + '</span>';
     if (kl) {
       kl.innerHTML = (d.keluhanLain && d.keluhanLain.length)
         ? d.keluhanLain.map(function (item) { return '<span class="badge badge-neutral">' + item + '</span>'; }).join(' ')
-        : '<span class="badge badge-neutral">Tidak ada</span>';
+        : '<span class="badge badge-neutral">Tidak ada keluhan lain</span>';
     }
 
     // 2. Render RPS (Sacred Seven)
@@ -337,7 +313,7 @@
       rps.innerHTML = 
         '<dt>Lokasi keluhan</dt><dd>' + d.lokasi + '</dd>' +
         '<dt>Sensasi dirasakan</dt><dd>' + d.sensasi + '</dd>' +
-        '<dt>Tingkat keparahan</dt><dd>' + d.keparahan + '/10 (sedang)</dd>' +
+        '<dt>Tingkat keparahan</dt><dd>' + d.keparahan + '/10 (VAS)</dd>' +
         '<dt>Lama keluhan</dt><dd>' + d.durasi + '</dd>' +
         '<dt>Frekuensi</dt><dd>' + d.frekuensi + '</dd>' +
         '<dt>Durasi serangan</dt><dd>' + d.durasiSerangan + '</dd>' +
@@ -349,32 +325,31 @@
     if (rpd) {
       rpd.innerHTML = 
         '<dt>Keluhan serupa</dt><dd>' + d.riwayatSerupa + '</dd>' +
+        '<dt>Riwayat benturan kepala</dt><dd><span class="' + (d.cedera.indexOf('Ya') !== -1 ? 'badge badge-danger' : '') + '">' + d.cedera + '</span></dd>' +
+        '<dt>Riwayat penyakit dahulu</dt><dd>' + d.penyakitDahulu + '</dd>' +
         '<dt>Kontak erat TBC</dt><dd><span class="' + (d.kontakTB.indexOf('Belum') !== -1 || d.kontakTB.indexOf('tahu') !== -1 ? 'unknown' : '') + '">' + d.kontakTB + '</span></dd>' +
-        '<dt>Penyakit keturunan</dt><dd>' + d.penyakitKeturunan + '</dd>' +
-        '<dt>Riwayat operasi</dt><dd>' + d.operasi + '</dd>' +
-        '<dt>Cedera serius</dt><dd>' + d.cedera + '</dd>';
+        '<dt>Riwayat operasi</dt><dd>' + d.operasi + '</dd>';
     }
 
     // 4. Render RPK
     var rpk = document.getElementById('dt-rpk');
     if (rpk) {
       rpk.innerHTML = 
-        '<dt>Keluhan serupa</dt><dd>' + d.keluargaKeluhanSerupa + '</dd>' +
-        '<dt>Penyakit keturunan</dt><dd>' + d.keluargaPenyakitKeturunan + '</dd>' +
-        '<dt>Penyakit menular</dt><dd>' + d.keluargaMenular + '</dd>';
+        '<dt>Keluhan serupa di keluarga</dt><dd>' + d.keluargaKeluhanSerupa + '</dd>' +
+        '<dt>Penyakit keturunan keluarga</dt><dd>' + d.keluargaPenyakitKeturunan + '</dd>' +
+        '<dt>Penyakit infeksi menular</dt><dd>' + d.keluargaMenular + '</dd>';
     }
 
-    // 5. Render Riwayat Sosial & Kebiasaan
+    // 5. Render Sosial & Gaya Hidup
     var sosial = document.getElementById('dt-sosial');
     if (sosial) {
       sosial.innerHTML = 
-        '<dt>Makanan terakhir</dt><dd>' + d.makananTerakhir + '</dd>' +
-        '<dt>Keteraturan makan</dt><dd>' + d.makanTeratur + '</dd>' +
+        '<dt>Stres pikiran / kerja</dt><dd>' + d.stres + '</dd>' +
+        '<dt>Kualitas tidur</dt><dd>' + d.tidur + '</dd>' +
+        '<dt>Pola makan</dt><dd>' + d.makanTeratur + '</dd>' +
         '<dt>Konsumsi air</dt><dd>' + d.minumAir + '</dd>' +
         '<dt>Kebiasaan merokok</dt><dd>' + d.merokok + '</dd>' +
-        '<dt>Konsumsi alkohol</dt><dd>' + d.alkohol + '</dd>' +
-        '<dt>Obat terlarang</dt><dd>' + d.obatTerlarang + '</dd>' +
-        '<dt>Kebersihan lingkungan</dt><dd>' + d.kebersihan + '</dd>';
+        '<dt>Konsumsi alkohol</dt><dd>' + d.alkohol + '</dd>';
     }
 
     // 6. Render Alergi & Obat
@@ -386,124 +361,69 @@
         '<dt>Kondisi khusus</dt><dd>' + d.kondisiKhusus + '</dd>';
     }
 
-    // 7. Evaluasi CDSS Lengkap (Fallback Aman Jika clinical-data.js tertunda)
-    var kb = (typeof KNOWLEDGE_BASE_SAKIT_KEPALA !== 'undefined') ? KNOWLEDGE_BASE_SAKIT_KEPALA : {
-      evaluasiRedFlag: function(data) {
-        var isRf = (data.cedera && data.cedera.toLowerCase().indexOf('ya') !== -1) || (parseInt(data.keparahan) >= 8);
-        return {
-          isRedFlag: isRf,
-          title: isRf ? "Tanda Bahaya Terdeteksi" : "Triase Terkendali",
-          desc: isRf ? "Waspada tanda kedaruratan atau peningkatan TIK." : "Tidak terdeteksi tanda kegawatdaruratan akut."
-        };
-      },
-      daftarDiagnosis: [
-        {
-          name: "Tension headache",
-          icd: "ICD-10 · G44.2 Tension–type headache",
-          totalKriteria: 6,
-          cekKesesuaian: function(data) { return 5; },
-          pxFisik: [
-            "Tanda vital: Tekanan darah, frekuensi nadi, suhu, RR (dalam batas normal)",
-            "Pemeriksaan kepala dan leher: Palpasi ketegangan otot perikranial dan leher belakang",
-            "Pemeriksaan neurologis dasar: Motorik, sensorik, dan refleks fisiologis",
-            "Pemeriksaan bola mata: Menyingkirkan kelainan refraksi atau peningkatan tekanan intraokular",
-            "Evaluasi fungsi mental dan daya ingat singkat"
-          ],
-          pxPenunjang: [
-            "Tidak memerlukan pemeriksaan laboratorium khusus pada faskes tingkat pertama"
-          ]
-        },
-        {
-          name: "Migren",
-          icd: "ICD-10 · G43.9 Migraine, unspecified",
-          totalKriteria: 6,
-          cekKesesuaian: function(data) { return 3; },
-          pxFisik: [
-            "Tanda vital: Evaluasi stabilitas hemodinamik",
-            "Pemeriksaan nervus kranialis dan tanda defisit neurologis fokal"
-          ],
-          pxPenunjang: [
-            "Tidak diperlukan pemeriksaan penunjang lanjutan tanpa indikasi defisit neurologis"
-          ]
-        },
-        {
-          name: "Hipertensi esensial (nyeri kepala tengkuk)",
-          icd: "ICD-10 · I10 Essential (primary) hypertension",
-          totalKriteria: 5,
-          cekKesesuaian: function(data) { return 2; },
-          pxFisik: [
-            "Pengukuran tekanan darah berkala posisi duduk",
-            "Auskultasi jantung dan pembuluh darah perifer"
-          ],
-          pxPenunjang: [
-            "Urinalisis lengkap (evaluasi proteinuria)",
-            "Profil lipid dan gula darah sewaktu"
-          ]
-        }
-      ]
-    };
-
-    // Render Red Flag
-    var rf = kb.evaluasiRedFlag(d);
-    var cdssAlert = document.getElementById('res-cds-alert');
-    if (cdssAlert) {
-      cdssAlert.style.borderColor = rf.isRedFlag ? 'var(--danger-line)' : 'var(--teal)';
-      cdssAlert.innerHTML = 
-        '<div class="sec-title" style="color:' + (rf.isRedFlag ? 'var(--danger)' : 'var(--teal)') + '">' +
-        '<svg class="ic ic-sm"><use href="' + (rf.isRedFlag ? '#i-alert' : '#i-shield') + '"/></svg>' + rf.title + '</div>' +
-        '<p class="small">' + rf.desc + '</p>';
-    }
-
-    // Render Daftar Kemungkinan Diagnosis (3 Penyakit Sekaligus)
-    var dxContainer = document.getElementById('res-cds-dx-list');
-    if (dxContainer) {
-      var evaluatedDx = kb.daftarDiagnosis.map(function (item) {
-        var matched = item.cekKesesuaian(d);
-        var pct = Math.round((matched / item.totalKriteria) * 100);
-        return {
-          name: item.name,
-          icd: item.icd,
-          matched: matched,
-          total: item.totalKriteria,
-          percent: pct,
-          pxFisik: item.pxFisik,
-          pxPenunjang: item.pxPenunjang
-        };
-      }).sort(function (a, b) {
-        return b.percent - a.percent;
-      });
-
-      dxContainer.innerHTML = evaluatedDx.map(function (item, idx) {
-        var isTop = idx === 0;
-        var badgeClass = item.percent >= 70 ? 'badge-info' : 'badge-warn';
-        var barClass = item.percent >= 70 ? '' : 'warn';
-
-        return (
-          '<div class="dx ' + (isTop ? 'sel' : '') + '">' +
-            '<div class="dx-top">' +
-              '<div><div class="dx-name">' + item.name + '</div><div class="dx-code">' + item.icd + '</div></div>' +
-              '<span class="badge ' + badgeClass + '">' + item.matched + ' / ' + item.total + ' kriteria</span>' +
-            '</div>' +
-            '<div class="bar ' + barClass + '"><i style="width:' + item.percent + '%"></i></div>' +
-            '<label class="pick"><input type="checkbox" ' + (isTop ? 'checked' : '') + '>Pilih sebagai diagnosis kerja</label>' +
-          '</div>'
-        );
-      }).join('');
-
-      // Render Rekomendasi Pemeriksaan Diagnosis Teratas
-      var topDx = evaluatedDx[0];
-      var pxFisikUl = document.getElementById('res-px-fisik');
-      if (pxFisikUl && topDx.pxFisik) {
-        pxFisikUl.innerHTML = topDx.pxFisik.map(function (pf) {
-          return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pf + '</li>';
-        }).join('');
+    // 7. Evaluasi CDSS
+    if (typeof KNOWLEDGE_BASE_SAKIT_KEPALA !== 'undefined') {
+      var rf = KNOWLEDGE_BASE_SAKIT_KEPALA.evaluasiRedFlag(d);
+      var cdssAlert = document.getElementById('res-cds-alert');
+      if (cdssAlert) {
+        cdssAlert.style.borderColor = rf.isRedFlag ? 'var(--danger-line)' : 'var(--teal)';
+        cdssAlert.innerHTML = 
+          '<div class="sec-title" style="color:' + (rf.isRedFlag ? 'var(--danger)' : 'var(--teal)') + '">' +
+          '<svg class="ic ic-sm"><use href="' + (rf.isRedFlag ? '#i-alert' : '#i-shield') + '"/></svg>' + rf.title + '</div>' +
+          '<p class="small">' + rf.desc + '</p>';
       }
 
-      var pxPenunjangUl = document.getElementById('res-px-penunjang');
-      if (pxPenunjangUl && topDx.pxPenunjang) {
-        pxPenunjangUl.innerHTML = topDx.pxPenunjang.map(function (pp) {
-          return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pp + '</li>';
+      var dxContainer = document.getElementById('res-cds-dx-list');
+      if (dxContainer) {
+        var dxList = KNOWLEDGE_BASE_SAKIT_KEPALA.daftarDiagnosis;
+        
+        var evaluatedDx = dxList.map(function (item) {
+          var matched = item.cekKesesuaian(d);
+          var pct = Math.round((matched / item.totalKriteria) * 100);
+          return {
+            name: item.name,
+            icd: item.icd,
+            matched: matched,
+            total: item.totalKriteria,
+            percent: pct,
+            pxFisik: item.pxFisik,
+            pxPenunjang: item.pxPenunjang
+          };
+        }).sort(function (a, b) {
+          return b.percent - a.percent;
+        });
+
+        dxContainer.innerHTML = evaluatedDx.map(function (item, idx) {
+          var isTop = idx === 0;
+          var badgeClass = item.percent >= 65 ? 'badge-info' : 'badge-warn';
+          var barClass = item.percent >= 65 ? '' : 'warn';
+
+          return (
+            '<div class="dx ' + (isTop ? 'sel' : '') + '">' +
+              '<div class="dx-top">' +
+                '<div><div class="dx-name">' + item.name + '</div><div class="dx-code">' + item.icd + '</div></div>' +
+                '<span class="badge ' + badgeClass + '">' + item.matched + ' / ' + item.total + ' kriteria</span>' +
+              '</div>' +
+              '<div class="bar ' + barClass + '"><i style="width:' + item.percent + '%"></i></div>' +
+              '<label class="pick"><input type="checkbox" ' + (isTop ? 'checked' : '') + '>Pilih sebagai diagnosis kerja</label>' +
+            '</div>'
+          );
         }).join('');
+
+        var topDx = evaluatedDx[0];
+        var pxFisikUl = document.getElementById('res-px-fisik');
+        if (pxFisikUl && topDx.pxFisik) {
+          pxFisikUl.innerHTML = topDx.pxFisik.map(function (pf) {
+            return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pf + '</li>';
+          }).join('');
+        }
+
+        var pxPenunjangUl = document.getElementById('res-px-penunjang');
+        if (pxPenunjangUl && topDx.pxPenunjang) {
+          pxPenunjangUl.innerHTML = topDx.pxPenunjang.map(function (pp) {
+            return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pp + '</li>';
+          }).join('');
+        }
       }
     }
   }
