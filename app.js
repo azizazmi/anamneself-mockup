@@ -358,7 +358,7 @@
       if (dxContainer) {
         var dxList = KNOWLEDGE_BASE_SAKIT_KEPALA.daftarDiagnosis;
         var activeCodes = d.codes || [];
-        var AMBANG_SKOR_MINIMUM = 5; // Ambang batas skor minimal 5 sesuai ketentuan
+        var AMBANG_SKOR_MINIMUM = 3; // Ambang batas skor minimal 3 sesuai ketentuan
 
         // Hitung skor total dan kriteria cocok untuk setiap diagnosis
         var evaluatedDx = dxList.map(function (item) {
@@ -392,7 +392,10 @@
           });
 
           // Diagnosis memenuhi syarat jika: skor >= 5, syarat wajib terpenuhi, dan bukan eksklusi murni
-          var isEligible = totalScore >= AMBANG_SKOR_MINIMUM && passRequired && !item.isExclusion;
+          var isEligible = (totalScore >= AMBANG_SKOR_MINIMUM) && 
+                         (coreCount >= 1) && 
+                         passRequired && 
+                         !item.isExclusion;
 
           return {
             id: item.id,
@@ -420,7 +423,7 @@
           dxContainer.innerHTML = 
             '<div style="grid-column: 1 / -1; padding: 1.5rem; background: var(--bg-card, #f8fafc); border: 1px dashed var(--line, #cbd5e1); border-radius: 8px; text-align: center;">' +
               '<p style="color: var(--muted, #64748b); margin: 0; font-size: 0.9rem;">' +
-                'Tidak ada diagnosis yang mencapai <b>ambang skor minimum (≥ 5 poin)</b> berdasarkan gejala yang dilaporkan pasien. Lakukan anamnesis langsung dan pemeriksaan fisik komprehensif.' +
+                'Tidak ada diagnosis yang mencapai <b>skor minimum ≥ 3 dengan setidaknya 1 kriteria inti (bobot 3)</b> berdasarkan gejala yang dilaporkan pasien. Lakukan anamnesis langsung dan pemeriksaan fisik komprehensif.' +
               '</p>' +
             '</div>';
           
