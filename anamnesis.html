@@ -51,7 +51,7 @@
         </div>
 
         <div class="stepper" aria-hidden="true">
-          <div class="s"></div>
+          <div class="s active"></div>
           <div class="s"></div>
           <div class="s"></div>
           <div class="s"></div>
@@ -59,9 +59,9 @@
           <div class="s"></div>
           <div class="s"></div>
         </div>
-        <div class="step-meta" id="step-meta"></div>
+        <div class="step-meta" id="step-meta">Langkah 1 dari 7: Keluhan Utama &amp; Screening Red Flag</div>
 
-        <!-- LANGKAH 1: KELUHAN UTAMA & KELUHAN LAIN -->
+        <!-- LANGKAH 1: KELUHAN UTAMA & SCREENING RED FLAG -->
         <section class="step card active" data-step="1">
           <div class="card-head"><h2><svg class="ic"><use href="#i-stetho"/></svg>Keluhan Utama</h2></div>
 
@@ -69,40 +69,29 @@
             <span class="label">Keluhan utama Anda saat ini:</span>
             <div class="chips">
               <label class="chip"><input type="radio" name="keluhan_utama" value="Sakit kepala" checked><span>Sakit kepala</span></label>
-              <label class="chip"><input type="radio" name="keluhan_utama" value="Pusing / Kleyengan"><span>Pusing / Kleyengan</span></label>
-              <label class="chip"><input type="radio" name="keluhan_utama" value="Nyeri leher & tengkuk"><span>Nyeri leher & tengkuk</span></label>
             </div>
           </div>
 
           <div class="card-head" style="margin-top: 1.5rem; padding-top: 0.5rem;">
-            <h2><svg class="ic"><use href="#i-stetho"/></svg>Keluhan Penyerta Lainnya</h2>
+            <h2><svg class="ic"><use href="#i-stetho"/></svg>Screening Red Flag</h2>
           </div>
 
+          <!-- Pertanyaan No. 1 Excel: Gate Trauma -->
           <div class="q">
-            <span class="label">Gejala lain yang menyertai sakit kepala Anda <span class="muted" style="font-weight:500">(boleh lebih dari satu)</span>:</span>
-            
-            <div class="organ-title">Saraf & Sensori</div>
+            <span class="label">Dalam beberapa hari terakhir, apakah kepala Anda pernah terbentur atau terluka?</span>
             <div class="chips">
-              <label class="chip"><input type="checkbox" name="gejala_lain" value="Sensitif cahaya (silau)"><span>Sensitif cahaya (silau)</span></label>
-              <label class="chip"><input type="checkbox" name="gejala_lain" value="Sensitif suara (bising)"><span>Sensitif suara (bising)</span></label>
-              <label class="chip"><input type="checkbox" name="gejala_lain" value="Rasa berputar (vertigo)"><span>Rasa berputar (vertigo)</span></label>
-              <label class="chip"><input type="checkbox" name="gejala_lain" value="Mata lelah / kabur"><span>Mata lelah / kabur</span></label>
+              <label class="chip"><input type="radio" name="cedera_kepala" data-code="ONS06" value="ONS06"><span>Ya, kepala saya pernah terbentur atau terluka</span></label>
+              <label class="chip"><input type="radio" name="cedera_kepala" data-code="NONE" value="Tidak" checked><span>Tidak</span></label>
             </div>
+          </div>
 
-            <div class="organ-title">Sistemik & Pencernaan</div>
+          <!-- Pertanyaan No. 13 Excel: Red Flag Gejala Akut -->
+          <div class="q">
+            <span class="label">Apakah Anda mengalami hal berikut saat ini? <span class="muted" style="font-weight:500">(boleh lebih dari satu)</span>:</span>
             <div class="chips">
-              <label class="chip"><input type="checkbox" name="gejala_lain" value="Mual"><span>Mual</span></label>
-              <label class="chip"><input type="checkbox" name="gejala_lain" value="Muntah"><span>Muntah</span></label>
-              <label class="chip"><input type="checkbox" name="gejala_lain" value="Demam"><span>Demam</span></label>
-              <label class="chip"><input type="checkbox" name="gejala_lain" value="Nafsu makan turun"><span>Nafsu makan turun</span></label>
-            </div>
-
-            <div class="organ-title">Kardiovaskular & Fisik</div>
-            <div class="chips">
-              <label class="chip"><input type="checkbox" name="gejala_lain" value="Leher tegang / kaku"><span>Leher tegang / kaku</span></label>
-              <label class="chip"><input type="checkbox" name="gejala_lain" value="Jantung berdebar"><span>Jantung berdebar</span></label>
-              <label class="chip"><input type="checkbox" name="gejala_lain" value="Gelisah / cemas"><span>Gelisah / cemas</span></label>
-              <label class="chip"><input type="checkbox" name="gejala_lain" value="Badan lemas"><span>Badan lemas</span></label>
+              <label class="chip"><input type="checkbox" name="red_flag" data-code="RF01" value="RF01"><span>Kelemahan satu sisi, bicara pelo, penglihatan ganda, kesemutan sekitar mulut, atau wajah mencong</span></label>
+              <label class="chip"><input type="checkbox" name="red_flag" data-code="RF02" value="RF02"><span>Penurunan kesadaran atau kejang</span></label>
+              <label class="chip"><input type="checkbox" name="red_flag" data-code="NONE" value="Tidak ada" checked><span>Tidak ada</span></label>
             </div>
           </div>
 
@@ -112,85 +101,79 @@
           </div>
         </section>
 
-        <!-- LANGKAH 2: RIWAYAT PENYAKIT SEKARANG (SACRED SEVEN BERBASIS OPSI) -->
+        <!-- LANGKAH 2: RIWAYAT PENYAKIT SEKARANG (LOKASI, KUALITAS, INTENSITAS, ONSET, FREKUENSI, DURASI) -->
         <section class="step card" data-step="2">
           <div class="card-head"><h2><svg class="ic"><use href="#i-activity"/></svg>Karakteristik Sakit Kepala</h2></div>
 
+          <!-- Pertanyaan No. 2 Excel: Lokasi Nyeri -->
           <div class="q">
-            <span class="label">Di area mana sakit kepala paling terasa?</span>
+            <span class="label">Di bagian mana kepala Anda terasa sakit? <span class="muted" style="font-weight:500">(boleh lebih dari satu)</span>:</span>
             <div class="chips">
-              <label class="chip"><input type="radio" name="lokasi" value="Leher belakang & tengkuk"><span>Leher belakang & tengkuk</span></label>
-              <label class="chip"><input type="radio" name="lokasi" value="Kedua sisi kepala / pelipis (bitemporal)"><span>Kedua sisi kepala / pelipis (bitemporal)</span></label>
-              <label class="chip"><input type="radio" name="lokasi" value="Satu sisi kepala saja (separuh)"><span>Satu sisi kepala saja (separuh)</span></label>
-              <label class="chip"><input type="radio" name="lokasi" value="Area dahi / depan mata"><span>Area dahi / depan mata</span></label>
-              <label class="chip"><input type="radio" name="lokasi" value="Menyeluruh di seluruh kepala"><span>Menyeluruh di seluruh kepala</span></label>
+              <label class="chip"><input type="checkbox" name="lokasi" data-code="LOK01" value="LOK01"><span>Seluruh kepala / terasa menyebar</span></label>
+              <label class="chip"><input type="checkbox" name="lokasi" data-code="LOK02" value="LOK02"><span>Satu sisi kepala</span></label>
+              <label class="chip"><input type="checkbox" name="lokasi" data-code="LOK03" value="LOK03"><span>Dahi / kepala bagian depan</span></label>
+              <label class="chip"><input type="checkbox" name="lokasi" data-code="LOK04" value="LOK04"><span>Kedua pelipis</span></label>
+              <label class="chip"><input type="checkbox" name="lokasi" data-code="LOK05" value="LOK05"><span>Belakang kepala sampai tengkuk</span></label>
+              <label class="chip"><input type="checkbox" name="lokasi" data-code="LOK06" value="LOK06"><span>Dari leher belakang menjalar ke kepala atau bahu</span></label>
+              <label class="chip"><input type="checkbox" name="lokasi" data-code="LOK07" value="LOK07"><span>Di belakang atau sekitar bola mata</span></label>
             </div>
           </div>
 
+          <!-- Pertanyaan No. 3 Excel: Kualitas Sensasi Nyeri -->
           <div class="q">
-            <span class="label">Bagaimana sensasi nyeri yang dirasakan?</span>
+            <span class="label">Seperti apa rasa sakit atau pusing yang Anda rasakan? <span class="muted" style="font-weight:500">(boleh lebih dari satu)</span>:</span>
             <div class="chips">
-              <label class="chip"><input type="radio" name="sensasi" value="Terasa kencang / berat seperti diikat"><span>Terasa kencang / berat seperti diikat</span></label>
-              <label class="chip"><input type="radio" name="sensasi" value="Berdenyut-denyut / menusuk"><span>Berdenyut-denyut / menusuk</span></label>
-              <label class="chip"><input type="radio" name="sensasi" value="Sensasi melayang / kepala terasa enteng"><span>Sensasi melayang / kepala terasa enteng</span></label>
-              <label class="chip"><input type="radio" name="sensasi" value="Sensasi lingkungan sekeliling berputar"><span>Sensasi lingkungan sekeliling berputar</span></label>
-              <label class="chip"><input type="radio" name="sensasi" value="Nyeri tumpul pegal"><span>Nyeri tumpul pegal</span></label>
+              <label class="chip"><input type="checkbox" name="sensasi" data-code="KUA01" value="KUA01"><span>Nyeri kepala terasa berat, pegal, kencang, atau seperti diikat</span></label>
+              <label class="chip"><input type="checkbox" name="sensasi" data-code="KUA02" value="KUA02"><span>Nyeri kepala berdenyut atau seperti ditusuk-tusuk</span></label>
+              <label class="chip"><input type="checkbox" name="sensasi" data-code="KUA03" value="KUA03"><span>Nyeri kepala saat membaca atau melihat dekat/layar lama</span></label>
+              <label class="chip"><input type="checkbox" name="sensasi" data-code="KUA04" value="KUA04"><span>Nyeri kepala disertai rasa berputar</span></label>
+              <label class="chip"><input type="checkbox" name="sensasi" data-code="KUA05" value="KUA05"><span>Nyeri kepala disertai rasa melayang atau bergoyang</span></label>
+              <label class="chip"><input type="checkbox" name="sensasi" data-code="KUA06" value="KUA06"><span>Kepala terasa berkunang-kunang atau mau pingsan</span></label>
             </div>
           </div>
 
+          <!-- Pertanyaan No. 4 Excel: Tingkat Keparahan / Intensitas -->
           <div class="q">
-            <label class="label" for="nyeri">Seberapa berat tingkat sakit kepala yang dirasakan?</label>
-            <div class="range-wrap">
-              <input type="range" id="nyeri" min="0" max="10" value="5">
-              <div class="range-val" id="nyeri-val">5/10</div>
-            </div>
-            <div class="range-scale"><span>Ringan (1-3)</span><span>Sedang (4-6)</span><span>Berat (7-10)</span></div>
-          </div>
-
-          <div class="q">
-            <span class="label">Sudah berapa lama keluhan sakit kepala ini Anda alami?</span>
-            <div class="form-row">
-              <input class="input" id="durasi" type="number" min="1" value="3" placeholder="3">
-              <select class="select" id="satuan">
-                <option value="hari" selected>hari</option>
-                <option value="jam">jam</option>
-                <option value="minggu">minggu</option>
-                <option value="bulan">bulan</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="q">
-            <span class="label">Berapa kali serangan sakit kepala muncul dalam sehari?</span>
-            <div class="form-row">
-              <input class="input" id="frekuensi" type="number" min="1" value="2" placeholder="2">
-              <select class="select" id="satuan-frekuensi">
-                <option value="kali/hari" selected>kali per hari</option>
-                <option value="terus menerus">Terus-menerus sepanjang hari</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="q">
-            <span class="label">Setiap kali kambuh, berapa lama durasi nyerinya bertahan?</span>
+            <span class="label">Seberapa berat sakit kepala Anda?</span>
             <div class="chips">
-              <label class="chip"><input type="radio" name="durasi_serangan" value="Singkat (< 30 menit)"><span>Singkat (&lt; 30 menit)</span></label>
-              <label class="chip"><input type="radio" name="durasi_serangan" value="30 menit - 4 jam"><span>30 menit – 4 jam</span></label>
-              <label class="chip"><input type="radio" name="durasi_serangan" value="4 jam - 3 hari (4-72 jam)"><span>4 jam – 3 hari (4–72 jam)</span></label>
-              <label class="chip"><input type="radio" name="durasi_serangan" value="Lebih dari 3 hari / menetap"><span>Lebih dari 3 hari / menetap</span></label>
+              <label class="chip"><input type="radio" name="intensitas" data-code="INT01" value="INT01"><span>Ringan, masih bisa beraktivitas</span></label>
+              <label class="chip"><input type="radio" name="intensitas" data-code="INT02" value="INT02" checked><span>Sedang</span></label>
+              <label class="chip"><input type="radio" name="intensitas" data-code="INT03" value="INT03"><span>Berat, menghambat aktivitas sehari-hari</span></label>
+              <label class="chip"><input type="radio" name="intensitas" data-code="INT04" value="INT04"><span>Terhebat yang pernah dirasakan</span></label>
             </div>
           </div>
-          
+
+          <!-- Pertanyaan No. 5 Excel: Cara Onset Muncul -->
           <div class="q">
-            <span class="label">Faktor yang memicu atau memperberat sakit kepala:</span>
+            <span class="label">Bagaimana sakit kepala ini mulai muncul?</span>
             <div class="chips">
-              <label class="chip"><input type="checkbox" name="pemicu" value="Kurang tidur / kelelahan"><span>Kurang tidur / kelelahan</span></label>
-              <label class="chip"><input type="checkbox" name="pemicu" value="Stres pikiran / beban kerja"><span>Stres pikiran / beban kerja</span></label>
-              <label class="chip"><input type="checkbox" name="pemicu" value="Melihat layar / membaca lama"><span>Melihat layar / membaca lama</span></label>
-              <label class="chip"><input type="checkbox" name="pemicu" value="Aktivitas fisik / perubahan posisi"><span>Aktivitas fisik / perubahan posisi</span></label>
-              <label class="chip"><input type="checkbox" name="pemicu" value="Telat makan / lapar"><span>Telat makan / lapar</span></label>
-              <label class="chip"><input type="checkbox" name="pemicu" value="Konsumsi kopi / garam berlebih"><span>Konsumsi kopi / garam berlebih</span></label>
-              <label class="chip"><input type="checkbox" name="pemicu" value="Tidak ada faktor pemicu khusus"><span>Tidak ada faktor pemicu khusus</span></label>
+              <label class="chip"><input type="radio" name="onset" data-code="ONS01" value="ONS01"><span>Mendadak</span></label>
+              <label class="chip"><input type="radio" name="onset" data-code="ONS02" value="ONS02" checked><span>Pelan-pelan bertambah berat</span></label>
+              <label class="chip"><input type="radio" name="onset" data-code="ONS03" value="ONS03"><span>Didahului perubahan mood atau gejala awal beberapa jam hingga hari sebelumnya</span></label>
+            </div>
+          </div>
+
+          <!-- Pertanyaan No. 6 Excel: Frekuensi Serangan -->
+          <div class="q">
+            <span class="label">Seberapa sering sakit kepala ini muncul?</span>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="frekuensi" data-code="FRE01" value="FRE01"><span>Pertama kali</span></label>
+              <label class="chip"><input type="radio" name="frekuensi" data-code="FRE02" value="FRE02" checked><span>Kadang-kadang, kurang dari 15 hari per bulan</span></label>
+              <label class="chip"><input type="radio" name="frekuensi" data-code="FRE03" value="FRE03"><span>Hampir tiap hari, 15 hari atau lebih per bulan selama 6 bulan</span></label>
+              <label class="chip"><input type="radio" name="frekuensi" data-code="FRE04" value="FRE04"><span>Terus-menerus tanpa jeda</span></label>
+              <label class="chip"><input type="radio" name="frekuensi" data-code="FRE05" value="FRE05"><span>Berulang dalam serangan-serangan terpisah</span></label>
+            </div>
+          </div>
+
+          <!-- Pertanyaan No. 7 Excel: Durasi Serangan Sekali Muncul -->
+          <div class="q">
+            <span class="label">Sekali muncul, berapa lama sakit kepalanya berlangsung?</span>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="durasi" data-code="DUR01" value="DUR01"><span>Hanya beberapa detik (kurang dari 30 detik)</span></label>
+              <label class="chip"><input type="radio" name="durasi" data-code="DUR02" value="DUR02"><span>30 menit sampai kurang dari 4 jam</span></label>
+              <label class="chip"><input type="radio" name="durasi" data-code="DUR03" value="DUR03" checked><span>4 sampai 72 jam</span></label>
+              <label class="chip"><input type="radio" name="durasi" data-code="DUR04" value="DUR04"><span>Beberapa hari sampai 1 minggu</span></label>
+              <label class="chip"><input type="radio" name="durasi" data-code="DUR05" value="DUR05"><span>Lebih dari 1 minggu</span></label>
             </div>
           </div>
 
@@ -200,57 +183,138 @@
           </div>
         </section>
 
-        <!-- LANGKAH 3: RIWAYAT PENYAKIT DAHULU -->
+        <!-- LANGKAH 3: FAKTOR PEMICU & PEMBERBERAT -->
         <section class="step card" data-step="3">
-          <div class="card-head"><h2><svg class="ic"><use href="#i-file"/></svg>Riwayat Penyakit Dahulu</h2></div>
+          <div class="card-head"><h2><svg class="ic"><use href="#i-activity"/></svg>Faktor Pemicu &amp; Pemberberat</h2></div>
+
+          <!-- Pertanyaan No. 8 Excel: Faktor Pemicu Nyeri -->
+          <div class="q">
+            <span class="label">Apakah ada hal yang membuat sakit kepala muncul atau bertambah berat? <span class="muted" style="font-weight:500">(boleh lebih dari satu)</span>:</span>
+            <div class="chips">
+              <label class="chip"><input type="checkbox" name="pemicu" data-code="PRE06" value="PRE06"><span>Stres, cemas, atau konflik dalam hidup</span></label>
+              <label class="chip"><input type="checkbox" name="pemicu" data-code="PRE04" value="PRE04"><span>Kurang atau terlalu banyak tidur</span></label>
+              <label class="chip"><input type="checkbox" name="pemicu" data-code="PRE02" value="PRE02"><span>Telat makan atau puasa</span></label>
+              <label class="chip"><input type="checkbox" name="pemicu" data-code="PRE11" value="PRE11"><span>Pemakaian mata lama untuk membaca atau bekerja dekat</span></label>
+              <label class="chip"><input type="checkbox" name="pemicu" data-code="ONS04" value="ONS04"><span>Muncul setelah membaca atau melihat dekat lama</span></label>
+              <label class="chip"><input type="checkbox" name="pemicu" data-code="PRE07" value="PRE07"><span>Aktivitas atau gerakan memperberat nyeri</span></label>
+              <label class="chip"><input type="checkbox" name="pemicu" data-code="PRE09" value="PRE09"><span>Aktivitas fisik berat</span></label>
+              <label class="chip"><input type="checkbox" name="pemicu" data-code="PRE08" value="PRE08"><span>Perubahan posisi kepala</span></label>
+              <label class="chip"><input type="checkbox" name="pemicu" data-code="ONS05" value="ONS05"><span>Muncul saat mengubah posisi kepala atau badan</span></label>
+              <label class="chip"><input type="checkbox" name="pemicu" data-code="PRE01" value="PRE01"><span>Menstruasi atau perubahan hormon</span></label>
+              <label class="chip"><input type="checkbox" name="pemicu" data-code="PRE05" value="PRE05"><span>Cahaya berkelip</span></label>
+              <label class="chip"><input type="checkbox" name="pemicu" data-code="PRE03" value="PRE03"><span>Makanan tertentu (alkohol, cokelat, susu, keju, buah)</span></label>
+              <label class="chip"><input type="checkbox" name="pemicu" data-code="PRE10" value="PRE10"><span>Banyak makan asin</span></label>
+              <label class="chip"><input type="checkbox" name="pemicu" data-code="PRE12" value="PRE12"><span>Tidak ada pemicu yang jelas</span></label>
+            </div>
+          </div>
+
+          <div class="wizard-actions">
+            <button type="button" class="btn btn-outline" data-prev><svg class="ic"><use href="#i-back"/></svg>Kembali</button>
+            <button type="button" class="btn btn-primary" data-next>Lanjut <svg class="ic"><use href="#i-arrow"/></svg></button>
+          </div>
+        </section>
+
+        <!-- LANGKAH 4: KELUHAN PENYERTA / REVIEW SISTEM -->
+        <section class="step card" data-step="4">
+          <div class="card-head"><h2><svg class="ic"><use href="#i-stetho"/></svg>Keluhan Penyerta Lainnya</h2></div>
+
+          <!-- Pertanyaan No. 12 Excel: Review Sistem Organ Lengkap -->
+          <div class="q">
+            <span class="label">Selain sakit kepala, apakah Anda juga merasakan keluhan berikut? <span class="muted" style="font-weight:500">(boleh lebih dari satu)</span>:</span>
+
+            <div class="organ-title">Umum &amp; Sistemik</div>
+            <div class="chips">
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN01" value="PEN01"><span>Demam</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN19" value="PEN19"><span>Lemas, lesu, atau mudah lelah</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN24" value="PEN24"><span>Rasa lapar berlebihan</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN25" value="PEN25"><span>Keringat dingin</span></label>
+            </div>
+
+            <div class="organ-title">Mata &amp; Penglihatan</div>
+            <div class="chips">
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN11" value="PEN11"><span>Sensitif terhadap cahaya</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN13" value="PEN13"><span>Gangguan penglihatan sebelum nyeri muncul</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN14" value="PEN14"><span>Penglihatan dekat kabur</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN15" value="PEN15"><span>Penglihatan jauh kabur</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN16" value="PEN16"><span>Penglihatan kabur atau terdistorsi (jarak tidak jelas)</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN17" value="PEN17"><span>Mata cepat lelah, berair, atau perih</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN18" value="PEN18"><span>Sering memicingkan mata atau memiringkan kepala</span></label>
+            </div>
+
+            <div class="organ-title">Telinga, Hidung &amp; Pernapasan (THT)</div>
+            <div class="chips">
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN28" value="PEN28"><span>Telinga berdenging atau pendengaran menurun</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN04" value="PEN04"><span>Bersin</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN05" value="PEN05"><span>Pilek / hidung meler</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN06" value="PEN06"><span>Sakit tenggorokan atau nyeri menelan</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN03" value="PEN03"><span>Batuk</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN22" value="PEN22"><span>Sesak atau napas pendek</span></label>
+            </div>
+
+            <div class="organ-title">Pencernaan</div>
+            <div class="chips">
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN07" value="PEN07"><span>Mual atau muntah</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN08" value="PEN08"><span>Nyeri ulu hati atau perut</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN09" value="PEN09"><span>Sembelit (konstipasi)</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN10" value="PEN10"><span>Diare</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN32" value="PEN32"><span>Nafsu makan menurun</span></label>
+            </div>
+
+            <div class="organ-title">Saraf, Otot, Sirkulasi &amp; Mental</div>
+            <div class="chips">
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN12" value="PEN12"><span>Sensitif terhadap suara</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN02" value="PEN02"><span>Nyeri otot atau sendi</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN29" value="PEN29"><span>Leher kaku</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN26" value="PEN26"><span>Jantung berdebar</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN30" value="PEN30"><span>Nyeri dada</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN20" value="PEN20"><span>Pucat</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN31" value="PEN31"><span>Bintik merah, mimisan, atau gusi berdarah</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN23" value="PEN23"><span>Gemetar</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN21" value="PEN21"><span>Sulit berkonsentrasi</span></label>
+              <label class="chip"><input type="checkbox" name="penyerta" data-code="PEN27" value="PEN27"><span>Gelisah</span></label>
+            </div>
+          </div>
+
+          <div class="wizard-actions">
+            <button type="button" class="btn btn-outline" data-prev><svg class="ic"><use href="#i-back"/></svg>Kembali</button>
+            <button type="button" class="btn btn-primary" data-next>Lanjut <svg class="ic"><use href="#i-arrow"/></svg></button>
+          </div>
+        </section>
+
+        <!-- LANGKAH 5: RIWAYAT PENYAKIT DAHULU (RPD) & KELUARGA (RPK) -->
+        <section class="step card" data-step="5">
+          <div class="card-head"><h2><svg class="ic"><use href="#i-file"/></svg>Riwayat Medis &amp; Keluarga</h2></div>
           <div class="alert alert-info mb-1">
             <svg class="ic"><use href="#i-info"/></svg>
             <p class="small">Jawaban <b>“Tidak tahu”</b> akan ditandai untuk dikonfirmasi ulang oleh dokter.</p>
           </div>
 
+          <!-- Pertanyaan No. 10 Excel: Riwayat Penyakit Pribadi -->
           <div class="q">
-            <span class="label">Apakah Anda sering mengalami keluhan sakit kepala serupa sebelumnya?</span>
-            <div class="seg">
-              <label><input type="radio" name="keluhan_lalu" value="Ya"><span>Ya (Kambuhan)</span></label>
-              <label><input type="radio" name="keluhan_lalu" value="Tidak"><span>Tidak (Baru pertama kali)</span></label>
-              <label><input type="radio" name="keluhan_lalu" value="Tidak tahu" class="unk"><span>Tidak tahu</span></label>
-            </div>
-          </div>
-
-          <div class="q">
-            <span class="label"><b>[Penting]</b> Apakah ada riwayat benturan atau cedera kepala dalam beberapa hari terakhir?</span>
-            <div class="seg">
-              <label><input type="radio" name="cedera" value="Ya"><span>Ya</span></label>
-              <label><input type="radio" name="cedera" value="Tidak" checked><span>Tidak</span></label>
-              <label><input type="radio" name="cedera" value="Tidak tahu" class="unk"><span>Tidak tahu</span></label>
-            </div>
-          </div>
-
-          <div class="q">
-            <span class="label">Riwayat penyakit yang pernah atau sedang diderita:</span>
+            <span class="label">Apakah Anda memiliki riwayat atau kondisi berikut? <span class="muted" style="font-weight:500">(boleh lebih dari satu)</span>:</span>
             <div class="chips">
-              <label class="chip"><input type="checkbox" name="rpd_list" value="Hipertensi / Tekanan Darah Tinggi"><span>Hipertensi (Darah Tinggi)</span></label>
-              <label class="chip"><input type="checkbox" name="rpd_list" value="Kelainan mata / Menggunakan kacamata"><span>Kelainan mata / Kacamata</span></label>
-              <label class="chip"><input type="checkbox" name="rpd_list" value="Insomnia / Gangguan tidur"><span>Insomnia / Gangguan tidur</span></label>
-              <label class="chip"><input type="checkbox" name="rpd_list" value="Diabetes / Sakit gula"><span>Diabetes</span></label>
-              <label class="chip"><input type="checkbox" name="rpd_list" value="Tidak ada"><span>Tidak ada</span></label>
+              <label class="chip"><input type="checkbox" name="rpd" data-code="RPD01" value="RPD01"><span>Diabetes dan memakai insulin atau obat gula darah</span></label>
+              <label class="chip"><input type="checkbox" name="rpd" data-code="RPD02" value="RPD02"><span>Hipertensi</span></label>
+              <label class="chip"><input type="checkbox" name="rpd" data-code="RPD03" value="RPD03"><span>Riwayat anemia, gizi kurang, atau pola makan vegetarian</span></label>
+              <label class="chip"><input type="checkbox" name="rpd" data-code="RPD04" value="RPD04"><span>Sedang hamil</span></label>
+              <label class="chip"><input type="checkbox" name="rpd" data-code="RPD05" value="RPD05"><span>Sedang menyusui</span></label>
+              <label class="chip"><input type="checkbox" name="rpd" data-code="RPD06" value="RPD06"><span>Pernah operasi mata atau telinga</span></label>
+              <label class="chip"><input type="checkbox" name="rpd" data-code="RPD07" value="RPD07"><span>Pernah kecelakaan, cedera kepala atau leher</span></label>
+              <label class="chip"><input type="checkbox" name="rpd" data-code="RPD08" value="RPD08"><span>Minum obat tertentu (streptomisin, gentamisin, kemoterapi)</span></label>
+              <label class="chip"><input type="checkbox" name="rpd" data-code="RPD09" value="RPD09"><span>Pernah ada gangguan cemas, depresi, atau masalah mental</span></label>
+              <label class="chip"><input type="checkbox" name="rpd" data-code="NONE" value="Tidak ada"><span>Tidak ada</span></label>
             </div>
           </div>
 
+          <!-- Pertanyaan No. 9 Excel: Riwayat Keluarga -->
           <div class="q">
-            <span class="label">Apakah pernah memiliki riwayat kontak erat dengan pasien TBC?</span>
-            <div class="seg">
-              <label><input type="radio" name="kontaktb" value="Ya"><span>Ya</span></label>
-              <label><input type="radio" name="kontaktb" value="Tidak" checked><span>Tidak</span></label>
-              <label><input type="radio" name="kontaktb" value="Tidak tahu" class="unk"><span>Tidak tahu</span></label>
-            </div>
-          </div>
-
-          <div class="q">
-            <span class="label">Apakah Anda pernah menjalani operasi / pembedahan?</span>
-            <div class="seg">
-              <label><input type="radio" name="operasi" value="Ya"><span>Ya</span></label>
-              <label><input type="radio" name="operasi" value="Tidak" checked><span>Tidak</span></label>
+            <span class="label">Apakah ada anggota keluarga Anda yang mengalami hal berikut? <span class="muted" style="font-weight:500">(boleh lebih dari satu)</span>:</span>
+            <div class="chips">
+              <label class="chip"><input type="checkbox" name="rpk" data-code="KEL01" value="KEL01"><span>Sakit kepala serupa atau migren</span></label>
+              <label class="chip"><input type="checkbox" name="rpk" data-code="KEL02" value="KEL02"><span>Hipertensi atau penyakit jantung</span></label>
+              <label class="chip"><input type="checkbox" name="rpk" data-code="KEL03" value="KEL03"><span>Rabun jauh atau pakai kacamata</span></label>
+              <label class="chip"><input type="checkbox" name="rpk" data-code="KEL04" value="KEL04"><span>Ada orang di sekitar sakit serupa atau demam</span></label>
+              <label class="chip"><input type="checkbox" name="rpk" data-code="NONE" value="Tidak ada"><span>Tidak ada</span></label>
             </div>
           </div>
 
@@ -260,130 +324,22 @@
           </div>
         </section>
 
-        <!-- LANGKAH 4: RIWAYAT PENYAKIT KELUARGA -->
-        <section class="step card" data-step="4">
-          <div class="card-head"><h2><svg class="ic"><use href="#i-users"/></svg>Riwayat Penyakit Keluarga</h2></div>
-          
-          <div class="q">
-            <span class="label">Apakah ada anggota keluarga yang sering mengalami sakit kepala serupa / migren?</span>
-            <div class="seg">
-              <label><input type="radio" name="rpk_serupa" value="Ya"><span>Ya</span></label>
-              <label><input type="radio" name="rpk_serupa" value="Tidak" checked><span>Tidak</span></label>
-              <label><input type="radio" name="rpk_serupa" value="Tidak tahu" class="unk"><span>Tidak tahu</span></label>
-            </div>
-          </div>
-
-          <div class="q">
-            <span class="label">Apakah ada keluarga yang memiliki riwayat darah tinggi (hipertensi) atau stroke?</span>
-            <div class="seg">
-              <label><input type="radio" name="rpk_hipertensi" value="Ya"><span>Ya</span></label>
-              <label><input type="radio" name="rpk_hipertensi" value="Tidak"><span>Tidak</span></label>
-              <label><input type="radio" name="rpk_hipertensi" value="Tidak tahu" class="unk"><span>Tidak tahu</span></label>
-            </div>
-          </div>
-
-          <div class="q">
-            <span class="label">Apakah ada anggota keluarga serumah yang sedang mengalami penyakit infeksi menular?</span>
-            <div class="seg">
-              <label><input type="radio" name="rpk_menular" value="Ya"><span>Ya</span></label>
-              <label><input type="radio" name="rpk_menular" value="Tidak" checked><span>Tidak</span></label>
-              <label><input type="radio" name="rpk_menular" value="Tidak tahu" class="unk"><span>Tidak tahu</span></label>
-            </div>
-          </div>
-
-          <div class="wizard-actions">
-            <button type="button" class="btn btn-outline" data-prev><svg class="ic"><use href="#i-back"/></svg>Kembali</button>
-            <button type="button" class="btn btn-primary" data-next>Lanjut <svg class="ic"><use href="#i-arrow"/></svg></button>
-          </div>
-        </section>
-
-        <!-- LANGKAH 5: RIWAYAT SOSIAL & KEBIASAAN -->
-        <section class="step card" data-step="5">
-          <div class="card-head"><h2><svg class="ic"><use href="#i-user"/></svg>Riwayat Sosial & Gaya Hidup</h2></div>
-
-          <div class="q">
-            <span class="label">Apakah Anda sedang mengalami stres pikiran atau beban kerja berlebih?</span>
-            <div class="seg">
-              <label><input type="radio" name="stres" value="Ya"><span>Ya</span></label>
-              <label><input type="radio" name="stres" value="Tidak" checked><span>Tidak</span></label>
-            </div>
-          </div>
-
-          <div class="q">
-            <span class="label">Bagaimana kualitas dan kecukupan waktu tidur Anda beberapa hari ini?</span>
-            <div class="seg">
-              <label><input type="radio" name="tidur" value="Cukup & Nyenyak"><span>Cukup & Nyenyak</span></label>
-              <label><input type="radio" name="tidur" value="Kurang tidur / Insomnia"><span>Kurang / Insomnia</span></label>
-            </div>
-          </div>
-
-          <div class="q">
-            <span class="label">Bagaimana keteraturan pola makan Anda?</span>
-            <div class="seg">
-              <label><input type="radio" name="makan" value="Teratur" checked><span>Teratur</span></label>
-              <label><input type="radio" name="makan" value="Sering telat makan"><span>Sering telat makan</span></label>
-            </div>
-          </div>
-
-          <div class="q">
-            <span class="label">Bagaimana kecukupan konsumsi air putih harian Anda?</span>
-            <div class="seg">
-              <label><input type="radio" name="air" value="Cukup (≥ 2 liter)" checked><span>Cukup (≥ 2L)</span></label>
-              <label><input type="radio" name="air" value="Kurang (< 2 liter)"><span>Kurang (&lt; 2L)</span></label>
-            </div>
-          </div>
-
-          <div class="q">
-            <span class="label">Apakah Anda memiliki kebiasaan merokok?</span>
-            <div class="seg">
-              <label><input type="radio" name="rokok" value="Ya"><span>Ya</span></label>
-              <label><input type="radio" name="rokok" value="Tidak" checked><span>Tidak</span></label>
-            </div>
-          </div>
-
-          <div class="q">
-            <span class="label">Apakah Anda mengonsumsi alkohol?</span>
-            <div class="seg">
-              <label><input type="radio" name="alkohol" value="Ya"><span>Ya</span></label>
-              <label><input type="radio" name="alkohol" value="Tidak" checked><span>Tidak</span></label>
-            </div>
-          </div>
-
-          <div class="wizard-actions">
-            <button type="button" class="btn btn-outline" data-prev><svg class="ic"><use href="#i-back"/></svg>Kembali</button>
-            <button type="button" class="btn btn-primary" data-next>Lanjut <svg class="ic"><use href="#i-arrow"/></svg></button>
-          </div>
-        </section>
-
-        <!-- LANGKAH 6: ALERGI & OBAT -->
+        <!-- LANGKAH 6: KEBIASAAN SEHARI-HARI & GAYA HIDUP (RPSOS) -->
         <section class="step card" data-step="6">
-          <div class="card-head"><h2><svg class="ic"><use href="#i-flask"/></svg>Alergi & Obat-obatan</h2></div>
+          <div class="card-head"><h2><svg class="ic"><use href="#i-user"/></svg>Kebiasaan &amp; Gaya Hidup</h2></div>
 
+          <!-- Pertanyaan No. 11 Excel: Kebiasaan Sehari-hari -->
           <div class="q">
-            <span class="label">Apakah Anda memiliki riwayat alergi obat?</span>
-            <div class="seg">
-              <label><input type="radio" name="alergi" value="Ya"><span>Ya</span></label>
-              <label><input type="radio" name="alergi" value="Tidak" checked><span>Tidak</span></label>
-              <label><input type="radio" name="alergi" value="Tidak tahu" class="unk"><span>Tidak tahu</span></label>
-            </div>
-          </div>
-
-          <div class="q">
-            <span class="label">Apakah saat ini sedang mengonsumsi obat sakit kepala atau obat rutin lainnya?</span>
-            <div class="seg">
-              <label><input type="radio" name="obat" value="Ya (Parasetamol / Obat Warung)"><span>Ya (Obat Warung / Analgetik)</span></label>
-              <label><input type="radio" name="obat" value="Ya (Obat Rutin Dokter)"><span>Ya (Obat Rutin)</span></label>
-              <label><input type="radio" name="obat" value="Tidak" checked><span>Tidak</span></label>
-            </div>
-          </div>
-
-          <div class="q">
-            <span class="label">Kondisi khusus fisiologis <span class="muted" style="font-weight:500">(khusus wanita)</span>:</span>
+            <span class="label">Mana yang sesuai dengan kebiasaan Anda sehari-hari? <span class="muted" style="font-weight:500">(boleh lebih dari satu)</span>:</span>
             <div class="chips">
-              <label class="chip"><input type="checkbox" name="kondisi_khusus" value="Sedang haid / PMS"><span>Sedang haid / PMS</span></label>
-              <label class="chip"><input type="checkbox" name="kondisi_khusus" value="Sedang hamil"><span>Sedang hamil</span></label>
-              <label class="chip"><input type="checkbox" name="kondisi_khusus" value="Menyusui"><span>Menyusui</span></label>
-              <label class="chip"><input type="checkbox" name="kondisi_khusus" value="Tidak ada"><span>Tidak ada</span></label>
+              <label class="chip"><input type="checkbox" name="kebiasaan" data-code="KEB01" value="KEB01"><span>Makan tidak teratur, sering telat, atau porsi kurang</span></label>
+              <label class="chip"><input type="checkbox" name="kebiasaan" data-code="KEB02" value="KEB02"><span>Gangguan tidur minimal 3 kali seminggu selama 1 bulan</span></label>
+              <label class="chip"><input type="checkbox" name="kebiasaan" data-code="KEB03" value="KEB03"><span>Aktivitas fisik berlebihan</span></label>
+              <label class="chip"><input type="checkbox" name="kebiasaan" data-code="KEB04" value="KEB04"><span>Aktivitas fisik kurang</span></label>
+              <label class="chip"><input type="checkbox" name="kebiasaan" data-code="KEB05" value="KEB05"><span>Rokok, alkohol, atau kafein berlebihan</span></label>
+              <label class="chip"><input type="checkbox" name="kebiasaan" data-code="KEB06" value="KEB06"><span>Ada genangan, sampah, jentik, atau kasus DBD di sekitar tempat tinggal</span></label>
+              <label class="chip"><input type="checkbox" name="kebiasaan" data-code="KEB07" value="KEB07"><span>Jarang cuci tangan, makanan atau minuman kurang bersih</span></label>
+              <label class="chip"><input type="checkbox" name="kebiasaan" data-code="NONE" value="Tidak ada yang sesuai"><span>Tidak ada yang sesuai</span></label>
             </div>
           </div>
 
@@ -402,7 +358,7 @@
 
           <div class="alert alert-warn mt-2">
             <svg class="ic"><use href="#i-alert"/></svg>
-            <p class="small"><b>Peringatan Tanda Bahaya:</b> Bila sakit kepala terasa seperti "petir mendadak" (sangat hebat), disertai kelemahan separuh anggota gerak, bicara pelo, atau demam tinggi kaku kuduk, segera tuju IGD terdekat[cite: 5].</p>
+            <p class="small"><b>Peringatan Tanda Bahaya:</b> Bila sakit kepala terasa seperti "petir mendadak" (sangat hebat), disertai kelemahan separuh anggota gerak, bicara pelo, atau demam tinggi kaku kuduk, segera tuju IGD terdekat.</p>
           </div>
 
           <label class="check mt-2">
