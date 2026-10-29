@@ -110,7 +110,31 @@
 
     wiz.addEventListener('click', function (e) {
       var n = e.target.closest('[data-next]'), p = e.target.closest('[data-prev]');
-      if (n) show(cur + 1);
+      
+      if (n) {
+        // Cek jika sedang di Langkah 1 (cur === 0)
+        if (cur === 0) {
+          // 1. Cek apakah opsi terbentur/cedera dipilih (ONS06)
+          var traumaInput = wiz.querySelector('input[name="cedera_kepala"]:checked');
+          var isTrauma = traumaInput && (traumaInput.getAttribute('data-code') === 'ONS06' || traumaInput.value === 'ONS06');
+
+          // 2. Cek apakah ada gejala tanda bahaya (RF01 / RF02) yang dicentang
+          var redFlagChecked = wiz.querySelectorAll('input[name="red_flag"]:checked');
+          var hasRedFlag = Array.prototype.some.call(redFlagChecked, function (el) {
+            var code = el.getAttribute('data-code');
+            return code === 'RF01' || code === 'RF02';
+          });
+
+          // Jika salah satu terpenuhi, langsung alihkan ke halaman IGD
+          if (isTrauma || hasRedFlag) {
+            window.location.href = 'redflag-warning.html';
+            return; // Hentikan alur, jangan lanjut ke langkah 2
+          }
+        }
+
+        show(cur + 1);
+      }
+      
       if (p) show(cur - 1);
     });
 
