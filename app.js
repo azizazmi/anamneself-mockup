@@ -274,6 +274,8 @@
   }
 
   // ---------- 6. SINKRONISASI RINGKASAN ANAMNESIS (ringkasan.html) ----------
+  var currentEvaluatedDx = []; // Menyimpan list diagnosis untuk interaktivitas pemilihan
+
   if (window.location.pathname.indexOf('ringkasan.html') !== -1) {
     var raw = localStorage.getItem('anamneself_data');
     var d = raw ? JSON.parse(raw) : {
@@ -357,17 +359,23 @@
         var dxList = KNOWLEDGE_BASE_SAKIT_KEPALA.daftarDiagnosis;
         var activeCodes = d.codes || [];
 
-        // Hitung kecocokan tiap diagnosis berdasarkan kriteria kode matriks
+        // Hitung kecocokan tiap diagnosis beserta nama gejala yang cocok
         var evaluatedDx = dxList.map(function (item) {
-          var matched = 0;
-          item.kriteriaCodes.forEach(function (c) {
-            if (activeCodes.indexOf(c) !== -1) matched++;
+          var matchedCodes = item.kriteriaCodes.filter(function (c) {
+            return activeCodes.indexOf(c) !== -1;
           });
-          var pct = item.kriteriaCodes.length > 0 ? Math.round((matched / item.kriteriaCodes.length) * 100) : 0;
+          var pct = item.kriteriaCodes.length > 0 ? Math.round((matchedCodes.length / item.kriteriaCodes.length) * 100) : 0;
+          
+          var matchedLabels = matchedCodes.map(function (c) {
+            return KAMUS_GEJALA[c] || c;
+          });
+
           return {
+            id: item.id,
             name: item.name,
             icd: item.icd,
-            matched: matched,
+            matched: matchedCodes.length,
+            matchedLabels: matchedLabels,
             total: item.kriteriaCodes.length,
             percent: pct,
             pxFisik: item.pxFisik,
@@ -380,39 +388,61 @@
         // Ambil diagnosis yang memiliki kecocokan minimal 1 kriteria (atau top 3 fallback)
         var topDxList = evaluatedDx.filter(function (x) { return x.matched > 0; });
         if (topDxList.length === 0) topDxList = evaluatedDx.slice(0, 3);
+        currentEvaluatedDx = topDxList;
 
         dxContainer.innerHTML = topDxList.map(function (item, idx) {
           var isTop = idx === 0;
           var badgeClass = item.percent >= 40 ? 'badge-info' : 'badge-warn';
           var barClass = item.percent >= 40 ? '' : 'warn';
 
+          var criteriaListHtml = item.matchedLabels.length > 0 
+            ? item.matchedLabels.map(function (label) {
+                return '<li style="font-size:0.8rem; color:#475569; margin-bottom:3px; line-height:1.35;">✓ ' + label + '</li>';
+              }).join('')
+            : '<li style="font-size:0.8rem; color:#94a3b8;">Tidak ada kriteria spesifik</li>';
+
           return (
-            '<div class="dx ' + (isTop ? 'sel' : '') + '" data-idx="' + idx + '">' +
-              '<div class="dx-top">' +
-                '<div><div class="dx-name">' + item.name + '</div><div class="dx-code">' + item.icd + '</div></div>' +
-                '<span class="badge ' + badgeClass + '">' + item.matched + ' / ' + item.total + ' kriteria (' + item.percent + '%)</span>' +
+            '<div class="dx ' + (isTop ? 'sel' : '') + '" data-idx="' + idx + '" style="display:flex; flex-direction:column; justify-content:space-between; height:100%;">' +
+              '<div>' +
+                '<div class="dx-top">' +
+                  '<div><div class="dx-name">' + item.name + '</div><div class="dx-code">' + item.icd + '</div></div>' +
+                  '<span class="badge ' + badgeClass + '">' + item.matched + ' / ' + item.total + ' (' + item.percent + '%)</span>' +
+                '</div>' +
+                '<div class="bar ' + barClass + '"><i style="width:' + item.percent + '%"></i></div>' +
+                
+                '<details style="margin-top:0.65rem; cursor:pointer;" ' + (isTop ? 'open' : '') + '>' +
+                  '<summary style="font-size:0.8rem; font-weight:600; color:var(--primary, #0284c7); outline:none; user-select:none;">' +
+                    'Lihat ' + item.matched + ' kriteria yang cocok' +
+                  '</summary>' +
+                  '<ul style="margin:0.5rem 0 0.5rem 0.25rem; padding-left:0.5rem; list-style:none;">' +
+                    criteriaListHtml +
+                  '</ul>' +
+                '</details>' +
               '</div>' +
-              '<div class="bar ' + barClass + '"><i style="width:' + item.percent + '%"></i></div>' +
-              '<label class="pick"><input type="checkbox" ' + (isTop ? 'checked' : '') + '>Pilih sebagai diagnosis kerja</label>' +
+
+              '<label class="pick mt-2" style="margin-top:auto;"><input type="checkbox" ' + (isTop ? 'checked' : '') + '>Pilih sebagai diagnosis kerja</label>' +
             '</div>'
           );
         }).join('');
 
-        // Tampilkan rekomendasi pemeriksaan untuk diagnosis teratas
-        var topDx = topDxList[0];
-        var pxFisikUl = document.getElementById('res-px-fisik');
-        if (pxFisikUl && topDx && topDx.pxFisik) {
-          pxFisikUl.innerHTML = topDx.pxFisik.map(function (pf) {
-            return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pf + '</li>';
-          }).join('');
+        function updateRekomendasiPemeriksaan(diagnosisItem) {
+          var pxFisikUl = document.getElementById('res-px-fisik');
+          if (pxFisikUl && diagnosisItem && diagnosisItem.pxFisik) {
+            pxFisikUl.innerHTML = diagnosisItem.pxFisik.map(function (pf) {
+              return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pf + '</li>';
+            }).join('');
+          }
+
+          var pxPenunjangUl = document.getElementById('res-px-penunjang');
+          if (pxPenunjangUl && diagnosisItem && diagnosisItem.pxPenunjang) {
+            pxPenunjangUl.innerHTML = diagnosisItem.pxPenunjang.map(function (pp) {
+              return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pp + '</li>';
+            }).join('');
+          }
         }
 
-        var pxPenunjangUl = document.getElementById('res-px-penunjang');
-        if (pxPenunjangUl && topDx && topDx.pxPenunjang) {
-          pxPenunjangUl.innerHTML = topDx.pxPenunjang.map(function (pp) {
-            return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pp + '</li>';
-          }).join('');
-        }
+        // Tampilkan awal untuk diagnosis peringkat 1
+        updateRekomendasiPemeriksaan(topDxList[0]);
       }
     }
   }
@@ -430,10 +460,31 @@
     });
   });
 
-  // ---------- 8. Checkbox Selection Delegasi ----------
+  // ---------- 8. Checkbox Selection Delegasi & Sinkronisasi Rekomendasi ----------
   document.addEventListener('change', function (e) {
     if (e.target.matches('.dx input[type=checkbox]')) {
-      e.target.closest('.dx').classList.toggle('sel', e.target.checked);
+      var card = e.target.closest('.dx');
+      card.classList.toggle('sel', e.target.checked);
+
+      // Jika dicentang, update rekomendasi pemeriksaan sesuai kartu ini
+      if (e.target.checked && typeof currentEvaluatedDx !== 'undefined') {
+        var idx = parseInt(card.getAttribute('data-idx'), 10);
+        if (!isNaN(idx) && currentEvaluatedDx[idx]) {
+          var selectedDx = currentEvaluatedDx[idx];
+          var pxFisikUl = document.getElementById('res-px-fisik');
+          if (pxFisikUl && selectedDx.pxFisik) {
+            pxFisikUl.innerHTML = selectedDx.pxFisik.map(function (pf) {
+              return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pf + '</li>';
+            }).join('');
+          }
+          var pxPenunjangUl = document.getElementById('res-px-penunjang');
+          if (pxPenunjangUl && selectedDx.pxPenunjang) {
+            pxPenunjangUl.innerHTML = selectedDx.pxPenunjang.map(function (pp) {
+              return '<li><svg class="ic ic-sm"><use href="#i-check"/></svg>' + pp + '</li>';
+            }).join('');
+          }
+        }
+      }
     }
   });
 })();
