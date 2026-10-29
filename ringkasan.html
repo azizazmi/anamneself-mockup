@@ -7,54 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<style>
-  /* Penataan Layout Responsif Atas-Bawah & Grid Diagnosis 3 Kolom */
-  .flow-vertical {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    width: 100%;
-  }
-  
-  /* Grid 3 kolom untuk kartu diagnosis */
-  #res-cds-dx-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
-  }
-
-  @media (min-width: 992px) {
-    #res-cds-dx-list {
-      grid-template-columns: repeat(3, 1fr); /* Pas 3 kartu per baris di layar desktop */
-    }
-  }
-
-  /* Grid 2 kolom di dalam kartu anamnesis agar rapi & tidak terlalu panjang ke bawah */
-  .anamnesis-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
-  }
-  @media (min-width: 768px) {
-    .anamnesis-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
-  /* Grid untuk rekomendasi pemeriksaan & aksi dokter */
-  .rec-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
-  }
-  @media (min-width: 768px) {
-    .rec-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-</style>
 </head>
 <body>
 <div class="app">
@@ -106,7 +58,7 @@
         </div>
         <div class="row no-print">
           <button class="btn btn-outline" onclick="window.print()"><svg class="ic ic-sm"><use href="#i-printer"/></svg>Cetak</button>
-          <button class="btn btn-primary"><svg class="ic ic-sm"><use href="#i-check"/></svg>Verifikasi &amp; Simpan</button>
+          <button class="btn btn-primary" onclick="alert('Data anamnesis dan diagnosis kerja berhasil diverifikasi dan disimpan ke rekam medis.')"><svg class="ic ic-sm"><use href="#i-check"/></svg>Verifikasi &amp; Simpan</button>
         </div>
       </div>
 
@@ -115,10 +67,10 @@
         <p class="small"><b>Sistem Pendukung Keputusan Klinis (CDSS):</b> Ringkasan butir gejala, persentase kesesuaian diagnosis, serta rekomendasi pemeriksaan di bawah ini disusun otomatis berdasarkan Matriks PPK 144 FKTP. Seluruh hasil <b>wajib diverifikasi oleh dokter pemeriksa</b>.</p>
       </div>
 
-      <!-- KONTEN UTAMA: MENGALIR KE BAWAH SECARA BERSIH -->
+      <!-- KONTEN UTAMA MENGALIR KE BAWAH -->
       <div class="flow-vertical">
 
-        <!-- ================= BAGIAN 1: HASIL ANAMNESIS PASIEN (FULL WIDTH) ================= -->
+        <!-- ================= BAGIAN 1: HASIL ANAMNESIS PASIEN ================= -->
         
         <!-- 1. Keluhan Utama & Penyerta -->
         <section class="card">
@@ -143,7 +95,7 @@
           </div>
         </section>
 
-        <!-- 2. Grid Dua Kolom untuk Riwayat Anamnesis Lanjutan -->
+        <!-- 2. Grid Dua Kolom untuk Anamnesis Lanjutan -->
         <div class="anamnesis-grid">
           
           <!-- Karakteristik Sakit Kepala (Sacred Seven) -->
@@ -233,7 +185,7 @@
           </p>
         </section>
 
-        <!-- Rekomendasi Pemeriksaan & Aksi Rekam Medis (Berdampingan) -->
+        <!-- Rekomendasi Pemeriksaan & Aksi Rekam Medis -->
         <div class="rec-grid">
           
           <section class="card">
@@ -256,8 +208,8 @@
               <p class="small mb-2">Setelah diagnosis kerja diverifikasi dokter, data kode ICD-10 dan butir temuan dapat dipindahkan ke rekam medis klinik.</p>
             </div>
             <div class="grid" style="gap:.6rem; margin-top:1rem;">
-              <button class="btn btn-primary btn-block"><svg class="ic ic-sm"><use href="#i-check"/></svg>Konfirmasi &amp; Simpan ke Rekam Medis</button>
-              <button class="btn btn-outline btn-block" onclick="navigator.clipboard && navigator.clipboard.writeText(document.querySelector('.flow-vertical').innerText)">Salin Ringkasan</button>
+              <button class="btn btn-primary btn-block" onclick="alert('Data anamnesis dan diagnosis kerja berhasil diverifikasi dan disimpan ke rekam medis.')"><svg class="ic ic-sm"><use href="#i-check"/></svg>Konfirmasi &amp; Simpan ke Rekam Medis</button>
+              <button class="btn btn-outline btn-block" onclick="navigator.clipboard && navigator.clipboard.writeText(document.querySelector('.flow-vertical').innerText); alert('Ringkasan berhasil disalin ke clipboard.');">Salin Ringkasan</button>
             </div>
           </section>
 
